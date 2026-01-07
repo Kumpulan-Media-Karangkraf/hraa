@@ -1,0 +1,32 @@
+﻿@model IEnumerable<HRAnalysis.Models.tbl_ATTKesalahan>
+
+<h2>Senarai Kesalahan</h2>
+
+<!-- Button to trigger match function -->
+<a asp-action="FindMatches" class="btn btn-primary mb-3">
+    Cari Padanan
+</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>IdStaff</th>
+            <th>Nama</th>
+            <th>Tarikh (Trk)</th>
+            <th>Jenis Kesalahan</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.IdStaff</td>
+                <td>@item.Name</td>
+                <td>@item.Trk.ToString("dd/MM/yyyy")</td>
+                <td>@item.JenisKesalahan</td>
+            </tr>
+        }
+    </tbody>
+</table>

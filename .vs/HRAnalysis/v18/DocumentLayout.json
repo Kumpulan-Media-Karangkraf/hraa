@@ -1,0 +1,49 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Login.cshtml",
+              "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Account\\Login.cshtml",
+              "RelativeDocumentMoniker": "HRAnalysis\\Views\\Account\\Login.cshtml",
+              "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Account\\Login.cshtml",
+              "RelativeToolTip": "HRAnalysis\\Views\\Account\\Login.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-07T09:38:27.577Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

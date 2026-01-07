@@ -1,0 +1,211 @@
+﻿<!-- Index View with Popup Modals -->
+@model IEnumerable<HRAnalysis.Models.tbl_Profile>
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<style>
+     @@media (max-width: 576px) {
+        .modal-dialog {
+            max-width: 95% !important;
+            margin: 1.75rem auto;
+        }
+    }
+</style>
+<p>
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createModal">
+        Tambah
+    </button>
+</p>
+
+<div class="table-responsive">
+<table id="semakanTable" class="table table-striped table-hover table-bordered align-middle" style="min-width: 1000px;">
+    <thead class="table-dark text-center">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UpdatedBy)
+            </th>
+                <th>Created At</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <i class="fas fa-folder fa-lg" style="color:#007aff;"></i>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UpdatedBy)
+                </td>
+                    <td>
+                        @(item.CreatedAt?.ToString("dd/MM/yyyy hh:mm tt"))
+                    </td>
+
+              <td>
+    <a class="btn btn-sm btn-warning" href="@Url.Action("Search", "AttKesalahan", new { id = item.Id })">
+        <i class="fas fa-search"></i> Next
+    </a>
+    
+    <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal"
+            onclick="setDeleteData('@item.Id', '@item.Name')">
+        <i class="fas fa-trash"></i> Padam
+    </button>
+</td>
+            </tr>
+        }
+    </tbody>
+</table>
+</div>
+
+<!-- Create Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createModalLabel">Tambah Profile Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="Create" id="createForm">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group mb-3">
+                        <label for="Name" class="control-label">Nama</label>
+                        <input name="Name" id="Name" class="form-control" required />
+                        <span class="text-danger" id="nameError"></span>
+                    </div>
+                    <!-- Hidden field to hold username -->
+<input type="hidden" id="sessionUsername" value="@Context.Session.GetString("Username")" />
+
+<!-- Inside modal -->
+<div class="form-group mb-3">
+    <label for="UpdatedBy" class="control-label">Dikemaskini Oleh</label>
+    <input name="UpdatedBy" id="UpdatedBy" class="form-control" readonly />
+    <span class="text-danger" id="updatedByError"></span>
+</div>
+
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Pengesahan Padam</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Adakah anda pasti ingin memadam profile ini?</p>
+                <div class="alert alert-warning">
+                    <strong>Nama Profile:</strong> <span id="deleteItemName"></span>
+                </div>
+                <p class="text-muted">Tindakan ini tidak boleh dibatalkan.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <form asp-action="Delete" method="post" style="display: inline;">
+                    <input type="hidden" id="deleteItemId" name="id" />
+                    <button type="submit" class="btn btn-danger">Ya, Padam</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const createModal = document.getElementById('createModal');
+        createModal.addEventListener('show.bs.modal', function () {
+            const username = document.getElementById('sessionUsername').value;
+            document.getElementById('UpdatedBy').value = username;
+        });
+    });
+</script>
+
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Bootstrap 5 compatible DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#semakanTable').DataTable({
+                pagingType: "full_numbers",
+                language: {
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Seterusnya",
+                        previous: "Sebelumnya"
+                    },
+                    lengthMenu: "Papar _MENU_ rekod",
+                    zeroRecords: "Tiada rekod dijumpai",
+                    info: "Menunjukkan _START_ hingga _END_ dari _TOTAL_ rekod",
+                    infoEmpty: "Tiada data tersedia",
+                    search: "Cari:"
+                },
+                pageLength: 10,
+                lengthMenu: [5, 10, 20, 50, 100]
+            });
+        });
+
+        // Function to set delete data
+        function setDeleteData(id, name) {
+            document.getElementById('deleteItemId').value = id;
+            document.getElementById('deleteItemName').textContent = name;
+        }
+
+        // Handle create form submission
+        $('#createForm').on('submit', function(e) {
+            e.preventDefault();
+
+            // Clear previous errors
+            $('.text-danger').text('');
+
+            // Basic validation
+            var name = $('#Name').val().trim();
+            var updatedBy = $('#UpdatedBy').val().trim();
+            var hasError = false;
+
+            if (!name) {
+                $('#nameError').text('Nama diperlukan');
+                hasError = true;
+            }
+
+            if (!updatedBy) {
+                $('#updatedByError').text('Dikemaskini Oleh diperlukan');
+                hasError = true;
+            }
+
+            if (!hasError) {
+                // If validation passes, submit the form
+                this.submit();
+            }
+        });
+
+        // Reset form when modal is closed
+        $('#createModal').on('hidden.bs.modal', function () {
+            $('#createForm')[0].reset();
+            $('.text-danger').text('');
+        });
+    </script>
+}

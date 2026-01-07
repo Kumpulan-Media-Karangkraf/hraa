@@ -1,0 +1,62 @@
+﻿@model HRAnalysis.Models.tbl_ATTSemakanV1
+
+@if (Model != null)
+{
+    <div class="semakan-details">
+        <div class="row mb-3">
+            <div class="col-md-2 fw-bold text-muted">Aplikasi:</div>
+            <div class="col-md-10">@(Model.AplikasiName ?? "N/A")</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-2 fw-bold text-muted">ID Semakan:</div>
+            <div class="col-md-4">@(Model.IdSemakan.ToString() ?? "N/A")</div>
+            <div class="col-md-2 fw-bold text-muted">Staff ID:</div>
+            <div class="col-md-4">@(Model.IdStaff ?? "N/A")</div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-2 fw-bold text-muted">Name:</div>
+            <div class="col-md-4">@(Model.Name ?? "N/A")</div>
+            <div class="col-md-2 fw-bold text-muted">Date:</div>
+            <div class="col-md-4">
+                <i class="fas fa-calendar-alt text-info me-1"></i>
+                @(Model.Trk != null ? Model.Trk.ToString("dd/MM/yyyy HH:mm") : "N/A")
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-2 fw-bold text-muted">Tarikh Mula:</div>
+            <div class="col-md-4">
+                <i class="fas fa-play text-success me-1"></i>
+                @(Model.TarikhMula.HasValue ? Model.TarikhMula.Value.ToString("dd/MM/yyyy") : "N/A")
+            </div>
+            <div class="col-md-2 fw-bold text-muted">Tarikh Tamat:</div>
+            <div class="col-md-4">
+                <i class="fas fa-stop text-danger me-1"></i>
+                @(Model.TarikhTamat.HasValue ? Model.TarikhTamat.Value.ToString("dd/MM/yyyy") : "N/A")
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-2 fw-bold text-muted">Bilangan Hari:</div>
+            <div class="col-md-10">@(Model.BilHari.HasValue ? Model.BilHari.Value.ToString("0.##") : "N/A")</div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.Catatan))
+        {
+            <div class="row mb-3">
+                <div class="col-md-2 fw-bold text-muted">Catatan:</div>
+                <div class="col-md-10 bg-light p-2 rounded">
+                    <i class="fas fa-sticky-note text-warning me-1"></i>
+                    @Model.Catatan
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle me-1"></i>
+      Tiada rekod
+    </div>
+}

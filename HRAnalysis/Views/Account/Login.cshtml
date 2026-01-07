@@ -1,0 +1,910 @@
+﻿@{
+    ViewData["Title"] = "Login HRAA";
+    Layout = "~/Views/Shared/Loginn.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - HR Analisis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+            /* Animated background particles */
+            body::before {
+                content: '';
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+                animation: backgroundFloat 10s ease-in-out infinite;
+                z-index: -1;
+            }
+
+        @@keyframes backgroundFloat {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-10px) rotate(1deg);
+            }
+
+            66% {
+                transform: translateY(10px) rotate(-1deg);
+            }
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: none;
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(74, 20, 140, 0.2);
+            border-top: 4px solid #4A148C;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .card {
+            max-width: 420px;
+            width: 100%;
+            background: transparent;
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+            animation: slideInUp 0.8s ease-out;
+            margin: 20px;
+        }
+
+        @@keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #4A148C, #6A1B9A);
+            color: white;
+            text-align: center;
+            padding: 60px 20px 30px;
+            font-size: 28px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+            .card-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+                animation: shimmer 3s ease-in-out infinite;
+            }
+
+        @@keyframes shimmer {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .card-header h2 {
+            position: relative;
+            z-index: 1;
+            margin: 0;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .card-body {
+            background-color: transparent;
+            padding: 40px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            position: relative;
+        }
+
+        /* Animated Character - Now in header */
+        .character {
+            position: relative;
+            z-index: 10;
+            width: 120px;
+            height: 120px;
+        }
+
+        .character-head {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto;
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+            animation: headBob 4s ease-in-out infinite;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @@keyframes headBob {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .character-face {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90px;
+            height: 90px;
+        }
+
+        .eyes {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 70px;
+            height: 25px;
+            position: absolute;
+            top: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .eye {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(74, 20, 140, 0.2);
+        }
+
+        .pupil {
+            width: 15px;
+            height: 15px;
+            background: #333;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.1s ease;
+        }
+
+        .eye.closed {
+            height: 3px;
+            border-radius: 3px;
+            background: #333;
+        }
+
+            .eye.closed .pupil {
+                display: none;
+            }
+
+        .mouth {
+            width: 35px;
+            height: 18px;
+            border: 3px solid white;
+            border-top: none;
+            border-radius: 0 0 35px 35px;
+            position: absolute;
+            top: 55px;
+            left: 50%;
+            transform: translateX(-50%);
+            transition: all 0.3s ease;
+        }
+
+            .mouth.happy {
+                border-color: #FFD700;
+                animation: smile 0.5s ease-in-out;
+            }
+
+            .mouth.surprised {
+                width: 20px;
+                height: 20px;
+                border-radius: 50%;
+                border-top: 3px solid white;
+                animation: surprise 0.5s ease-in-out;
+            }
+
+        @@keyframes smile {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.2);
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        @@keyframes surprise {
+            0% {
+                transform: translateX(-50%) scale(1);
+            }
+
+            50% {
+                transform: translateX(-50%) scale(1.3);
+            }
+
+            100% {
+                transform: translateX(-50%) scale(1);
+            }
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: white;
+                font-weight: 600;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+        .form-control {
+            border-radius: 12px;
+            border: 2px solid white;
+            padding: 15px;
+            font-size: 16px;
+            width: 100%;
+            background: transparent;
+            color: white;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+            .form-control:focus {
+                border-color: #4A148C;
+                background: white;
+                color: #333;
+                box-shadow: 0 0 20px rgba(74, 20, 140, 0.1);
+                transform: translateY(-2px);
+            }
+
+            .form-control::placeholder {
+                color: #aaa;
+                transition: all 0.3s ease;
+            }
+
+            .form-control:focus::placeholder {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4A148C, #6A1B9A);
+            border: none;
+            color: white;
+            padding: 15px 20px;
+            font-size: 16px;
+            border-radius: 12px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+            .btn-primary::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                transition: left 0.5s;
+            }
+
+            .btn-primary:hover::before {
+                left: 100%;
+            }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 30px rgba(74, 20, 140, 0.3);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+        .alert {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            border: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @@keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        .password-toggle {
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #aaa;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+            .password-toggle:hover {
+                color: #4A148C;
+                transform: translateY(-50%) scale(1.1);
+            }
+
+        .card-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+            .card-footer p {
+                margin: 0;
+                color: #555;
+                font-weight: 500;
+            }
+
+        .copyright-text {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 25px;
+            z-index: 1;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* Responsive design */
+        @@media (max-width: 768px) {
+            .card {
+                margin: 15px;
+            }
+
+            .card-header {
+                padding: 50px 15px 25px;
+                font-size: 24px;
+            }
+
+            .card-body {
+                padding: 30px 20px;
+            }
+
+            .form-control {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .btn-primary {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+
+            .character {
+                width: 100px;
+                height: 100px;
+            }
+
+            .character-head {
+                width: 100px;
+                height: 100px;
+            }
+
+            .character-face {
+                width: 80px;
+                height: 80px;
+            }
+
+            .eyes {
+                width: 60px;
+                height: 22px;
+                top: 25px;
+            }
+
+            .eye {
+                width: 25px;
+                height: 25px;
+            }
+
+            .pupil {
+                width: 12px;
+                height: 12px;
+            }
+
+            .mouth {
+                width: 30px;
+                height: 15px;
+                top: 50px;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .card {
+                margin: 10px;
+            }
+
+            .card-header {
+                font-size: 20px;
+                padding: 40px 15px 20px;
+            }
+
+                .card-header h2 {
+                    letter-spacing: 1px;
+                }
+
+            .copyright-text {
+                bottom: 10px;
+                font-size: 12px;
+                padding: 8px 16px;
+            }
+
+            .character {
+                width: 80px;
+                height: 80px;
+            }
+
+            .character-head {
+                width: 80px;
+                height: 80px;
+            }
+
+            .character-face {
+                width: 70px;
+                height: 70px;
+            }
+
+            .eyes {
+                width: 50px;
+                height: 20px;
+                top: 22px;
+            }
+
+            .eye {
+                width: 20px;
+                height: 20px;
+            }
+
+            .pupil {
+                width: 10px;
+                height: 10px;
+            }
+
+            .mouth {
+                width: 25px;
+                height: 12px;
+                top: 45px;
+            }
+        }
+
+        /* Focus states for accessibility */
+        .form-control:focus {
+            outline: 2px solid #4A148C;
+            outline-offset: 2px;
+        }
+
+        .btn-primary:focus {
+            outline: 2px solid #ffffff;
+            outline-offset: 2px;
+        }
+
+        @@keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay">
+        <div class="spinner" id="manualSpinner"></div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <!-- Animated Character moved to header -->
+            <div class="character">
+                <div class="character-head">
+                    <div class="character-face">
+                        <div class="eyes">
+                            <div class="eye" id="leftEye">
+                                <div class="pupil" id="leftPupil"></div>
+                            </div>
+                            <div class="eye" id="rightEye">
+                                <div class="pupil" id="rightPupil"></div>
+                            </div>
+                        </div>
+                        <div class="mouth" id="mouth"></div>
+                    </div>
+                </div>
+            </div>
+            <h2>HR Analisis</h2>
+        </div>
+        <div class="card-body">
+
+            @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+            {
+                <div class="alert" role="alert">
+                    @ViewBag.ErrorMessage
+                </div>
+            }
+            <form id="loginForm" asp-action="Login" asp-controller="Account" method="post">
+                <div class="form-group">
+                    <label style="color:#4A148C" for="username">Username:</label>
+                    <input type="text" class="form-control" placeholder="Enter Username (ex:aina.nabilah)" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label style="color:#4A148C" for="password">Password:</label>
+                    <div style="position: relative;">
+                        <input type="password" class="form-control" placeholder="Enter Password" id="password" name="password">
+                        <span class="password-toggle" onclick="togglePassword()">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Copyright text positioned outside the card components -->
+    <p class="copyright-text">&copy; Copyright to Karangkraf</p>
+
+    <script>
+        const form = document.getElementById("loginForm");
+        const overlay = document.getElementById("loading-overlay");
+        const spinner = document.getElementById("manualSpinner");
+        const usernameInput = document.getElementById("username");
+        const passwordInput = document.getElementById("password");
+        const leftEye = document.getElementById("leftEye");
+        const rightEye = document.getElementById("rightEye");
+        const leftPupil = document.getElementById("leftPupil");
+        const rightPupil = document.getElementById("rightPupil");
+        const mouth = document.getElementById("mouth");
+        const errorAlert = null; // Not needed anymore since using ViewBag
+
+        let rotation = 0;
+        let intervalId;
+        let isTyping = false;
+        let blinkInterval;
+
+        // Eye tracking mouse movement
+        document.addEventListener('mousemove', function (e) {
+            if (isTyping) return;
+
+            const eyes = document.querySelectorAll('.eye');
+            eyes.forEach(eye => {
+                const rect = eye.getBoundingClientRect();
+                const eyeCenterX = rect.left + rect.width / 2;
+                const eyeCenterY = rect.top + rect.height / 2;
+
+                const angle = Math.atan2(e.clientY - eyeCenterY, e.clientX - eyeCenterX);
+                const distance = Math.min(6, Math.sqrt(Math.pow(e.clientX - eyeCenterX, 2) + Math.pow(e.clientY - eyeCenterY, 2)) / 10);
+
+                const pupil = eye.querySelector('.pupil');
+                const pupilX = Math.cos(angle) * distance;
+                const pupilY = Math.sin(angle) * distance;
+
+                pupil.style.transform = `translate(calc(-50% + ${pupilX}px), calc(-50% + ${pupilY}px))`;
+            });
+        });
+
+        // Blinking animation
+        function startBlinking() {
+            blinkInterval = setInterval(() => {
+                if (!isTyping) {
+                    blink();
+                }
+            }, 3000 + Math.random() * 2000);
+        }
+
+        function blink() {
+            leftEye.classList.add('closed');
+            rightEye.classList.add('closed');
+            setTimeout(() => {
+                leftEye.classList.remove('closed');
+                rightEye.classList.remove('closed');
+            }, 150);
+        }
+
+        // Character reactions to typing
+        function showHappyExpression() {
+            mouth.classList.add('happy');
+            setTimeout(() => {
+                mouth.classList.remove('happy');
+            }, 1000);
+        }
+
+        function showSurprisedExpression() {
+            mouth.classList.add('surprised');
+            setTimeout(() => {
+                mouth.classList.remove('surprised');
+            }, 1000);
+        }
+
+        function lookAtInput(input) {
+            isTyping = true;
+            const rect = input.getBoundingClientRect();
+            const inputCenterX = rect.left + rect.width / 2;
+            const inputCenterY = rect.top + rect.height / 2;
+
+            const eyes = document.querySelectorAll('.eye');
+            eyes.forEach(eye => {
+                const eyeRect = eye.getBoundingClientRect();
+                const eyeCenterX = eyeRect.left + eyeRect.width / 2;
+                const eyeCenterY = eyeRect.top + eyeRect.height / 2;
+
+                const angle = Math.atan2(inputCenterY - eyeCenterY, inputCenterX - eyeCenterX);
+                const distance = 6;
+
+                const pupil = eye.querySelector('.pupil');
+                const pupilX = Math.cos(angle) * distance;
+                const pupilY = Math.sin(angle) * distance;
+
+                pupil.style.transform = `translate(calc(-50% + ${pupilX}px), calc(-50% + ${pupilY}px))`;
+            });
+        }
+
+        function resetEyes() {
+            setTimeout(() => {
+                isTyping = false;
+                leftPupil.style.transform = 'translate(-50%, -50%)';
+                rightPupil.style.transform = 'translate(-50%, -50%)';
+            }, 1000);
+        }
+
+        // Input event listeners
+        usernameInput.addEventListener('focus', function () {
+            lookAtInput(this);
+            showHappyExpression();
+        });
+
+        usernameInput.addEventListener('blur', function () {
+            resetEyes();
+        });
+
+        usernameInput.addEventListener('input', function () {
+            if (this.value.length > 0) {
+                showHappyExpression();
+            }
+        });
+
+        passwordInput.addEventListener('focus', function () {
+            lookAtInput(this);
+            showSurprisedExpression();
+        });
+
+        passwordInput.addEventListener('blur', function () {
+            resetEyes();
+        });
+
+        passwordInput.addEventListener('input', function () {
+            if (this.value.length > 0) {
+                // Eyes look away when typing password (privacy)
+                leftPupil.style.transform = 'translate(-70%, -50%)';
+                rightPupil.style.transform = 'translate(-70%, -50%)';
+            }
+        });
+
+        // Form submission
+        form.addEventListener("submit", function (e) {
+            // Let the form submit naturally to ASP.NET Core
+            // Only prevent default for client-side validation
+            if (!usernameInput.value.trim()) {
+                e.preventDefault();
+                showSurprisedExpression();
+                // Show error styling
+                usernameInput.style.borderColor = '#ff6b6b';
+                setTimeout(() => {
+                    usernameInput.style.borderColor = 'white';
+                }, 3000);
+                return;
+            }
+
+            // Show happy expression and loading
+            overlay.style.display = "flex";
+            showHappyExpression();
+
+            intervalId = setInterval(() => {
+                rotation += 10;
+                spinner.style.transform = "rotate(" + rotation + "deg)";
+            }, 30);
+
+            // Let the form submit to server
+            // The spinner will be hidden when the page reloads or redirects
+        });
+
+        function togglePassword() {
+            const passwordInput = document.getElementById("password");
+            const icon = document.querySelector(".password-toggle i");
+
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+                // Eyes look at password when revealed
+                lookAtInput(passwordInput);
+                showSurprisedExpression();
+            } else {
+                passwordInput.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+                // Eyes look away when password is hidden
+                leftPupil.style.transform = 'translate(-70%, -50%)';
+                rightPupil.style.transform = 'translate(-70%, -50%)';
+            }
+        }
+
+        // Enhanced interactions
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.style.transform = 'translateY(-2px)';
+            });
+
+            input.addEventListener('blur', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Ripple effect for button
+        document.querySelector('.btn-primary').addEventListener('click', function (e) {
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.position = 'absolute';
+            ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+            ripple.style.borderRadius = '50%';
+            ripple.style.transform = 'scale(0)';
+            ripple.style.animation = 'ripple 0.6s linear';
+            ripple.style.pointerEvents = 'none';
+
+            this.appendChild(ripple);
+
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+
+        // Start blinking when page loads
+        startBlinking();
+
+        // Welcome animation
+        setTimeout(() => {
+            showHappyExpression();
+        }, 1000);
+    </script>
+</body>
+</html>

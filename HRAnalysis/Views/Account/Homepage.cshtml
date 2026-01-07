@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center fw-bold text-dark">Selamat Datang ke Sistem Analisis Kehadiran</h2>
+
+    <div class="row justify-content-center g-4">
+        <!-- Dashboard -->
+        <div class="col-md-4">
+            <div class="card dashboard-card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-tachometer-alt fa-3x icon-primary mb-3"></i>
+                    <h5 class="card-title fw-semibold">Dashboard</h5>
+                    <p class="card-text">Senarai kesemua fungsi yang ada dalam sistem.</p>
+                    <a href="@Url.Action("Homepage", "Account")" class="btn btn-outline-primary btn-sm">Pergi</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Semakan Kehadiran -->
+        <div class="col-md-4">
+            <div class="card dashboard-card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-user-check fa-3x icon-success mb-3"></i>
+                    <h5 class="card-title fw-semibold">Semakan Kehadiran</h5>
+                    <p class="card-text">Semak rekod kehadiran staf organisasi.</p>
+                    <a href="@Url.Action("Index", "Profile")" class="btn btn-outline-success btn-sm">Pergi</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pengguna -->
+        <div class="col-md-4">
+            <div class="card dashboard-card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-users-cog fa-3x icon-warning mb-3"></i>
+                    <h5 class="card-title fw-semibold">Pengguna</h5>
+                    <p class="card-text">Urus pengguna dan peranan dalam sistem.</p>
+                    <a href="@Url.Action("Index", "User")" class="btn btn-outline-warning btn-sm text-dark">Pergi</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Senarai Semakan -->
+        <div class="col-md-4">
+            <div class="card dashboard-card border-0 shadow-sm text-center">
+                <div class="card-body">
+                    <i class="fas fa-list-alt fa-3x icon-secondary mb-3"></i>
+                    <h5 class="card-title fw-semibold">Senarai Semakan</h5>
+                    <p class="card-text">Lihat atau semak kesalahan yang direkodkan.</p>
+                    <a href="@Url.Action("ViewKesalahan", "AttKesalahan")" class="btn btn-outline-secondary btn-sm">Pergi</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .dashboard-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 1rem;
+        padding: 20px;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .dashboard-card i {
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover i {
+            transform: scale(1.1);
+        }
+
+    .icon-primary {
+        color: #007bff;
+    }
+
+    .icon-success {
+        color: #28a745;
+    }
+
+    .icon-warning {
+        color: #ffc107;
+    }
+
+    .icon-secondary {
+        color: #6c757d;
+    }
+</style>

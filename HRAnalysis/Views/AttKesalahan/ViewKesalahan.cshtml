@@ -1,0 +1,88 @@
+﻿@model IEnumerable<HRAnalysis.Models.tbl_ATTSemakanV1>
+
+@{
+    ViewData["Title"] = "Senarai Semakan";
+}
+
+<div class="table-responsive">
+    <table id="semakanTable" class="table table-striped table-hover table-bordered align-middle" style="min-width: 1000px;">
+        <thead class="table-dark text-center">
+            <tr>
+                <th>Id</th>
+                <th>@Html.DisplayNameFor(model => model.IdStaff)</th>
+                <th>Nama</th>
+                <th>Tarikh</th>
+                <th>Aplikasi</th>
+                <th>IdAplikasi</th>
+                <th>@Html.DisplayNameFor(model => model.Catatan)</th>
+                <th>@Html.DisplayNameFor(model => model.TarikhMula)</th>
+                <th>@Html.DisplayNameFor(model => model.TarikhTamat)</th>
+                <th>@Html.DisplayNameFor(model => model.BilHari)</th>
+                <th>@Html.DisplayNameFor(model => model.valInNEW)</th>
+                <th>@Html.DisplayNameFor(model => model.ACTValInNEW)</th>
+
+                <th>@Html.DisplayNameFor(model => model.valOutNEW)</th>
+
+                <th>@Html.DisplayNameFor(model => model.ACTValOutNEW)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="text-center">
+                    <td>@Html.DisplayFor(modelItem => item.IdSemakan)</td>
+                    <td>@Html.DisplayFor(modelItem => item.IdStaff)</td>
+                    <td style="width:160px;">@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td style="width:80px;">@item.Trk.ToString("dd/MM/yyyy")</td>
+
+
+                    <td>@Html.DisplayFor(modelItem => item.AplikasiName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.IdAplikasi)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Catatan)</td>
+                    <td>@item.TarikhMula?.ToString("dd/MM/yyyy")</td>
+                    <td>@item.TarikhTamat?.ToString("dd/MM/yyyy")</td>
+
+                    <td>@Html.DisplayFor(modelItem => item.BilHari)</td>
+                    <td>@Html.DisplayFor(modelItem => item.valInNEW)</td>
+
+                    <td>@Html.DisplayFor(modelItem => item.ACTValInNEW)</td>
+
+                    <td>@Html.DisplayFor(modelItem => item.valOutNEW)</td>
+
+                    <td>@Html.DisplayFor(modelItem => item.ACTValOutNEW)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap 5 compatible DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#semakanTable').DataTable({
+                pagingType: "full_numbers",
+                language: {
+                    paginate: {
+                        first: "Pertama",
+                        last: "Terakhir",
+                        next: "Seterusnya",
+                        previous: "Sebelumnya"
+                    },
+                    lengthMenu: "Papar _MENU_ rekod",
+                    zeroRecords: "Tiada rekod dijumpai",
+                    info: "Menunjukkan _START_ hingga _END_ dari _TOTAL_ rekod",
+                    infoEmpty: "Tiada data tersedia",
+                    search: "Cari:"
+                },
+                pageLength: 10,
+                lengthMenu: [5, 10, 20, 50, 100]
+            });
+        });
+    </script>
+}

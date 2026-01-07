@@ -1,0 +1,1957 @@
+﻿@model HRAnalysis.Models.ViewModel.AttKesalahanSearchViewModel
+@{
+    ViewData["Title"] = "Semakan Kehadiran";
+}
+
+@* @if (ViewBag.PassedId != null)
+{
+    <div class="alert alert-info">
+        Profile Id: @ViewBag.PassedId
+    </div>
+} *@
+
+<style>
+
+    /* Table Responsive Enhancements */
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+    }
+
+        .table-responsive table {
+            white-space: nowrap;
+        }
+
+        .table-responsive td,
+        .table-responsive th {
+            white-space: nowrap;
+            min-width: 100px;
+        }
+
+            /* Specific column widths */
+            .table-responsive th:first-child,
+            .table-responsive td:first-child {
+                min-width: 80px; /* ID Staf */
+            }
+
+            .table-responsive th:nth-child(2),
+            .table-responsive td:nth-child(2) {
+                min-width: 150px; /* Nama */
+            }
+
+    .semakan-link {
+        color: #0d6efd;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .semakan-link:hover {
+            color: #0b5ed7;
+            text-decoration: underline !important;
+        }
+
+    .semakan-details .form-control-plaintext {
+        padding: 0.375rem 0;
+        font-weight: 500;
+    }
+
+    .semakan-details .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .modal-body {
+        min-height: 200px;
+    }
+</style>
+<style>
+    /* Global Loading Overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-spinner {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    /* Button Loading State */
+    .btn-loading {
+        position: relative;
+        pointer-events: none;
+    }
+
+        .btn-loading .btn-text {
+            opacity: 0;
+        }
+
+        .btn-loading .spinner-border {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1rem;
+            height: 1rem;
+        }
+
+    .hidden {
+        display: none !important;
+    }
+</style>
+
+<div id="globalLoading" class="loading-overlay hidden">
+    <div class="loading-spinner">
+        <div class="spinner-border text-primary mb-3" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <div>
+            <div id="progressStatus" class="text-success fw-bold mt-2"></div>
+            <p class="text-muted mb-0">Sila bersabar, data kehadiran sedang diproses.</p>
+        </div>
+    </div>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        @TempData["InfoMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@using (Html.BeginForm("Search", "AttKesalahan", FormMethod.Post, new { @class = "mb-4", @id = "searchForm" }))
+{
+    <div class="row g-3">
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.SearchIdStaff, "ID Staf", new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.SearchIdStaff, new { @class = "form-control", placeholder = "Masukkan ID Staf", @id = "idStaffInput", oninput = "fetchStaffData(this.value)" })
+          
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.SearchNama, "Nama", new { @class = "form-label" })
+            @Html.TextBoxFor(m => m.SearchNama, new { @class = "form-control", placeholder = "Masukkan Nama Staf", @id = "namaInput" })
+        </div>
+        <div class="col-md-2">
+            @Html.LabelFor(m => m.SearchSyrt, "Syarikat", new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.SearchSyrt, (List<SelectListItem>)ViewBag.SyrtList, new { @class = "form-select", @id = "syarikatDropdown", onchange = "updateNamaList()" })
+        </div>
+        <div class="col-md-2">
+            @Html.LabelFor(m => m.SearchJab, "Jabatan", new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.SearchJab, (List<SelectListItem>)ViewBag.JabList, new { @class = "form-select", @id = "jabatanDropdown", onchange = "updateNamaList()" })
+        </div>
+        <div class="col-md-2">
+            @Html.LabelFor(m => m.SearchBhgn, "Bahagian", new { @class = "form-label" })
+            @Html.DropDownListFor(m => m.SearchBhgn, (List<SelectListItem>)ViewBag.BhgnList, new { @class = "form-select", @id = "bahagianDropdown", onchange = "updateNamaList()" })
+        </div>
+    </div>
+
+    <div class="row g-3 mt-3">
+        <div class="col-md-2">
+            <label class="form-label">Tarikh Dari</label>
+            <input type="date" name="DateFrom" id="dateFrom" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label class="form-label">Tarikh Hingga</label>
+            <input type="date" name="DateTo" id="dateTo" class="form-control" />
+        </div>
+
+        <script>
+            // On page load
+            window.onload = function () {
+                const from = localStorage.getItem('dateFrom');
+                const to = localStorage.getItem('dateTo');
+
+                if (from) document.getElementById('dateFrom').value = from;
+                else document.getElementById('dateFrom').value = new Date().toISOString().split('T')[0];
+
+                if (to) document.getElementById('dateTo').value = to;
+                else document.getElementById('dateTo').value = new Date().toISOString().split('T')[0];
+            };
+
+            // On input change
+            document.getElementById('dateFrom').addEventListener('change', function () {
+                localStorage.setItem('dateFrom', this.value);
+            });
+
+            document.getElementById('dateTo').addEventListener('change', function () {
+                localStorage.setItem('dateTo', this.value);
+            });
+        </script>
+
+        <!-- Nama Staf Multi-select with Search -->
+        <div class="col-md-6">
+            <label class="form-label">Nama Staf</label>
+            <!-- Row: Search + Buttons in one row -->
+            <div class="row g-2 align-items-center">
+                <!-- Search Box -->
+                <div class="col-6">
+                    <input type="text" id="userSearchBox" class="form-control" placeholder="Cari nama staf..." onkeyup="filterUsers()" />
+                </div>
+
+                <!-- Buttons beside search -->
+                <div class="col-2">
+                    <button type="button" class="btn btn-sm btn-outline-primary w-100" onclick="selectAllUsers()">Pilih Semua</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary w-100" onclick="clearAllUsers()">Kosongkan</button>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-sm btn-outline-info w-100" onclick="toggleStaffList()" id="toggleStaffBtn">
+                        <i class="fas fa-eye"></i> Paparkan
+                    </button>
+                </div>
+            </div>
+
+            <!-- Selected Users Info -->
+            <div id="selectedUsersDisplay" class="mt-2" style="display: none;"></div>
+
+
+            <input type="hidden" name="SelectedRecordId" value="@Model.SelectedRecordId" />
+
+
+            <!-- Checkbox List -->
+            <div class="border p-2 mt-2" style="max-height: 300px; overflow-y: auto; display: none;" id="namaCheckboxList">
+                @if (ViewBag.NamaList != null)
+                {
+                    foreach (var item in (List<SelectListItem>)ViewBag.NamaList)
+                    {
+                        var isSelected = Model.SelectedUserIds != null && Model.SelectedUserIds.Contains(item.Value);
+                        <div class="form-check user-checkbox-item" data-name="@item.Text.ToLower()">
+                            <input class="form-check-input user-checkbox" type="checkbox" name="SelectedUserIds" value="@item.Value" id="nama_@item.Value" onchange="updateSelectedDisplay()" @(isSelected ? "checked" : "") />
+                            <label class="form-check-label" for="nama_@item.Value">
+                                <strong>@item.Value</strong> - @item.Text
+                            </label>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted">Tiada data nama tersedia</div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    let staffDataTimeout;
+
+    $(document).ready(function () {
+        $('#syarikatDropdown, #jabatanDropdown, #bahagianDropdown').on('change', function () {
+            updateAllDropdowns();
+        });
+
+        // Initialize selected display
+        updateSelectedDisplay();
+    });
+
+    // New function to fetch staff data by ID
+    function fetchStaffData(idStaff) {
+        // Clear previous timeout
+        if (staffDataTimeout) {
+            clearTimeout(staffDataTimeout);
+        }
+
+        // Hide previous results
+        hideStaffInfo();
+
+        // Don't search if input is empty or too short
+        if (!idStaff || idStaff.trim().length < 2) {
+            return;
+        }
+
+        // Show loading indicator
+        $('#idStaffLoading').show();
+
+        // Set timeout to avoid too many requests
+        staffDataTimeout = setTimeout(function () {
+            $.ajax({
+                url: '@Url.Action("GetStaffById", "AttKesalahan")',
+                type: 'GET',
+                data: { idStaff: idStaff.trim() },
+                success: function (data) {
+                    $('#idStaffLoading').hide();
+
+                    if (data.success && data.staff) {
+                        displayStaffInfo(data.staff);
+                        // Optional: Auto-fill other fields
+                        autoFillFields(data.staff);
+                    } else {
+                        showStaffError(data.message || 'ID Staf tidak dijumpai');
+                    }
+                },
+                error: function () {
+                    $('#idStaffLoading').hide();
+                    showStaffError('Ralat semasa mencari data staf');
+                }
+            });
+        }, 500); // 500ms delay
+    }
+
+    function displayStaffInfo(staff) {
+        $('#staffNama').text(staff.nama || '-');
+        $('#staffSyarikat').text(staff.syarikat || '-');
+        $('#staffJabatan').text(staff.jabatan || '-');
+        $('#staffBahagian').text(staff.bahagian || '-');
+        $('#staffInfoDisplay').show();
+        $('#staffErrorDisplay').hide();
+    }
+
+    function showStaffError(message) {
+        $('#staffErrorMessage').text(message);
+        $('#staffErrorDisplay').show();
+        $('#staffInfoDisplay').hide();
+    }
+
+    function hideStaffInfo() {
+        $('#staffInfoDisplay').hide();
+        $('#staffErrorDisplay').hide();
+        $('#idStaffLoading').hide();
+    }
+
+    function autoFillFields(staff) {
+        // Auto-fill name field
+        if (staff.nama) {
+            $('#namaInput').val(staff.nama);
+        }
+
+        // Auto-select dropdowns if values exist
+        if (staff.syarikat) {
+            $('#syarikatDropdown').val(staff.syarikat);
+        }
+        if (staff.jabatan) {
+            $('#jabatanDropdown').val(staff.jabatan);
+        }
+        if (staff.bahagian) {
+            $('#bahagianDropdown').val(staff.bahagian);
+        }
+
+        // Trigger change event to update dependent dropdowns
+        $('#syarikatDropdown, #jabatanDropdown, #bahagianDropdown').trigger('change');
+    }
+
+    function updateAllDropdowns() {
+        var selectedSyrt = $('#syarikatDropdown').val();
+        var selectedJab = $('#jabatanDropdown').val();
+        var selectedBhgn = $('#bahagianDropdown').val();
+
+        $.ajax({
+            url: '@Url.Action("GetFilteredData", "AttKesalahan")',
+            type: 'GET',
+            data: {
+                syarikat: selectedSyrt,
+                jabatan: selectedJab,
+                bahagian: selectedBhgn
+            },
+            success: function (data) {
+                updateDropdown('#syarikatDropdown', data.syarikatList, selectedSyrt);
+                updateDropdown('#jabatanDropdown', data.jabatanList, selectedJab);
+                updateDropdown('#bahagianDropdown', data.bahagianList, selectedBhgn);
+                updateNameCheckboxList(data.namaList);
+            }
+        });
+    }
+
+    function updateDropdown(dropdownId, dataList, selectedValue) {
+        var $dropdown = $(dropdownId);
+        $dropdown.empty();
+        $dropdown.append($('<option>').val('').text('-- Pilih --'));
+
+        $.each(dataList, function (index, item) {
+            $dropdown.append($('<option>').val(item.value).text(item.text));
+        });
+
+        if (selectedValue) {
+            $dropdown.val(selectedValue);
+        }
+    }
+
+    function updateNameCheckboxList(namaList) {
+        var $container = $('#namaCheckboxList');
+        $container.empty();
+
+        $.each(namaList, function (index, item) {
+            var checkboxHtml =
+                '<div class="form-check user-checkbox-item" data-name="' + item.text.toLowerCase() + '">' +
+                '<input class="form-check-input user-checkbox" type="checkbox" name="SelectedUserIds" value="' + item.value + '" id="nama_' + item.value + '" onchange="updateSelectedDisplay()" />' +
+                '<label class="form-check-label" for="nama_' + item.value + '">' +
+                '<strong>' + item.value + '</strong> - ' + item.text +
+                '</label>' +
+                '</div>';
+            $container.append(checkboxHtml);
+        });
+
+        updateSelectedDisplay();
+    }
+
+    function filterUsers() {
+        var searchText = document.getElementById('userSearchBox').value.toLowerCase();
+        var checkboxItems = document.querySelectorAll('.user-checkbox-item');
+
+        checkboxItems.forEach(function (item) {
+            var name = item.getAttribute('data-name');
+            if (name.includes(searchText)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    function selectAllUsers() {
+        var visibleCheckboxes = document.querySelectorAll('.user-checkbox-item:not([style*="display: none"]) .user-checkbox');
+        visibleCheckboxes.forEach(function (checkbox) {
+            checkbox.checked = true;
+        });
+        updateSelectedDisplay();
+    }
+
+    function clearAllUsers() {
+        var checkboxes = document.querySelectorAll('.user-checkbox');
+        checkboxes.forEach(function (checkbox) {
+            checkbox.checked = false;
+        });
+        updateSelectedDisplay();
+    }
+
+    function toggleStaffList() {
+        var staffList = document.getElementById('namaCheckboxList');
+        var toggleBtn = document.getElementById('toggleStaffBtn');
+
+        if (staffList.style.display === 'none') {
+            staffList.style.display = 'block';
+            toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Sembunyikan';
+        } else {
+            staffList.style.display = 'none';
+            toggleBtn.innerHTML = '<i class="fas fa-eye"></i> Paparkan';
+        }
+    }
+
+    function updateSelectedDisplay() {
+        var selectedCheckboxes = document.querySelectorAll('.user-checkbox:checked');
+        var selectedCount = selectedCheckboxes.length;
+        var selectedDisplay = document.getElementById('selectedUsersDisplay');
+        var selectedCountElement = document.getElementById('selectedCount');
+        var selectedUsersList = document.getElementById('selectedUsersList');
+
+        if (selectedCountElement) {
+            selectedCountElement.textContent = selectedCount;
+        }
+
+        if (selectedCount > 0) {
+            selectedDisplay.style.display = 'block';
+            var selectedNames = [];
+            selectedCheckboxes.forEach(function (checkbox) {
+                var label = document.querySelector('label[for="' + checkbox.id + '"]');
+                if (label) {
+                    selectedNames.push(label.textContent.trim());
+                }
+            });
+            if (selectedUsersList) {
+                selectedUsersList.innerHTML = selectedNames.join(', ');
+            }
+        } else {
+            selectedDisplay.style.display = 'none';
+        }
+    }
+
+    // Form submission with loading state
+    $('#searchForm').on('submit', function () {
+        $('#searchBtn .btn-text').addClass('d-none');
+        $('#searchBtn .spinner-border').removeClass('d-none');
+        $('#searchBtn').prop('disabled', true);
+    });
+
+    function resetForm() {
+        // Reset input fields
+        $('#idStaffInput').val('');
+        $('#namaInput').val('');
+        $('#userSearchBox').val('');
+
+        // Reset dropdowns
+        $('#syarikatDropdown').val('');
+        $('#jabatanDropdown').val('');
+        $('#bahagianDropdown').val('');
+
+        // Reset date fields to today
+        const today = new Date().toISOString().split('T')[0];
+        $('input[name="DateFrom"]').val(today);
+        $('input[name="DateTo"]').val(today);
+
+        // Uncheck all checkboxes
+        $('.user-checkbox').prop('checked', false);
+
+        // Hide selected user display and checkbox list
+        $('#selectedUsersDisplay').hide();
+        $('#namaCheckboxList').hide();
+        $('#toggleStaffBtn').html('<i class="fas fa-eye"></i> Paparkan');
+
+        // Hide staff info and error display
+        hideStaffInfo();
+    }
+
+</script>
+
+<div class="row mt-6">
+     <div class="col-auto">
+        <button type="submit" id="searchBtn" class="btn btn-primary" form="searchForm">
+            <span class="btn-text">
+                <i class="fas fa-search"></i> Cari
+            </span>
+            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+        </button>
+    </div>
+
+    <div class="col-auto">
+        <button type="button" class="btn btn-warning" onclick="resetForm()">
+            <i class="fas fa-undo"></i> Reset
+        </button>
+    </div>
+
+
+    <div class="col-auto">
+        <!-- Original Export Button -->
+        <form method="post" asp-action="ExportToExcelHtml" asp-controller="Export" id="exportForm" class="d-inline">
+            @* Hidden fields to carry the search filters *@
+            <input type="hidden" name="searchIdStaff" value="@Model.SearchIdStaff" />
+            <input type="hidden" name="searchNama" value="@Model.SearchNama" />
+            <input type="hidden" name="searchSyrt" value="@Model.SearchSyrt" />
+            <input type="hidden" name="searchJab" value="@Model.SearchJab" />
+            <input type="hidden" name="searchBhgn" value="@Model.SearchBhgn" />
+            <input type="hidden" name="searchJaw" value="@Model.SearchJaw" />
+            <input type="hidden" name="dateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="dateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="searchSelectedNama" value="@Model.SearchSelectedNama" />
+            <input type="hidden" name="SelectedRecordId" value="@Model.SelectedRecordId" />
+            @* Add this section to pass the selected user IDs *@
+            @if (Model.SelectedUserIds != null && Model.SelectedUserIds.Any())
+            {
+                foreach (var userId in Model.SelectedUserIds)
+                {
+                    <input type="hidden" name="SelectedUserIds" value="@userId" />
+                }
+            }
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Summary Report
+            </button>
+        </form>
+
+        <!-- New Summary Export Button -->
+        <form method="post" asp-action="ExportDetailedToExcelHtml" asp-controller="Export" id="summaryExportForm" class="d-inline ms-2">
+            @* Hidden fields to carry the search filters *@
+            <input type="hidden" name="searchIdStaff" value="@Model.SearchIdStaff" />
+            <input type="hidden" name="searchNama" value="@Model.SearchNama" />
+            <input type="hidden" name="searchSyrt" value="@Model.SearchSyrt" />
+            <input type="hidden" name="searchJab" value="@Model.SearchJab" />
+            <input type="hidden" name="searchBhgn" value="@Model.SearchBhgn" />
+            <input type="hidden" name="searchJaw" value="@Model.SearchJaw" />
+            <input type="hidden" name="dateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="dateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")" />
+            <input type="hidden" name="searchSelectedNama" value="@Model.SearchSelectedNama" />
+                 <input type="hidden" name="SelectedRecordId" value="@Model.SelectedRecordId" />
+
+            @* Add this section to pass the selected user IDs *@
+            @if (Model.SelectedUserIds != null && Model.SelectedUserIds.Any())
+            {
+                foreach (var userId in Model.SelectedUserIds)
+                {
+                    <input type="hidden" name="SelectedUserIds" value="@userId" />
+                }
+            }
+            <button type="submit" class="btn btn-info">
+                <i class="fas fa-file-alt"></i> Detail Report
+            </button>
+        </form>
+    </div>
+</div>
+
+@if (ViewBag.HasExistingRecords == true && ViewBag.Searched != true)
+{
+    <ul class="nav nav-tabs mt-4" id="existingRecordTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" style="color:black" id="existing-kesalahan-tab" data-bs-toggle="tab" data-bs-target="#existing-kesalahan" type="button" role="tab">
+                <i class="fas fa-database"></i> Rekod Sedia Ada (@Model.ExistingKesalahanRecords.Count)
+            </button>
+        </li>
+    </ul>
+
+   
+
+    <div class="tab-content" id="existingRecordTabsContent">
+        <div class="tab-pane fade show active" id="existing-kesalahan" role="tabpanel">
+            <div class="mt-4">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Rekod sedia ada untuk Profile ID: @Model.SelectedRecordId</strong>
+                    <br><small>Data dipaparkan menggunakan DataTables.</small>
+                </div>
+
+                <!-- Form 2: Senarai Permohonan -->
+                <form asp-controller="SemakanPage" asp-action="Semakan" method="get" target="_blank">
+                    <input type="hidden" name="searchIdStaff" value="@Model.SearchIdStaff" />
+                    <input type="hidden" name="searchNama" value="@Model.SearchNama" />
+                    <input type="hidden" name="dateFrom" value="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" />
+                    <input type="hidden" name="dateTo" value="@(Model.DateTo?.ToString("yyyy-MM-dd"))" />
+
+                    @* Add SelectedRecordId if applicable *@
+                    @if (Model.SelectedRecordId != null)
+                    {
+                        <input type="hidden" name="SelectedRecordId" value="@Model.SelectedRecordId" />
+                    }
+
+                    @if (Model.SelectedUserIds != null && Model.SelectedUserIds.Any())
+                    {
+                        foreach (var userId in Model.SelectedUserIds)
+                        {
+                            <input type="hidden" name="SelectedUserIds" value="@userId" />
+                        }
+                    }
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="btn-text">
+                            <i class="fas fa-tasks"></i> Senarai Permohonan
+                        </span>
+                    </button>
+                </form>
+
+
+
+                <script>
+                    const form = document.querySelector("form");
+                    form.addEventListener("submit", function () {
+                        const spinner = form.querySelector(".spinner-border");
+                        const btnText = form.querySelector(".btn-text");
+                        spinner.classList.remove("d-none");
+                        btnText.classList.add("d-none");
+                    });
+                </script>
+
+                <div class="table-responsive" style="overflow-x: auto;">
+                    <!-- Table Controls -->
+                    <div class="row table-controls">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <label for="entriesSelect" class="form-label me-2 mb-0">Show</label>
+                                <select id="entriesSelect" class="form-select" style="width: auto;">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="-1">All</option>
+                                </select>
+                                <span class="ms-2">entries</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex justify-content-end">
+                                <div class="d-flex align-items-center">
+                                    <label for="searchInput" class="form-label me-2 mb-0">Search:</label>
+                                    <input type="text" id="searchInput" class="form-control" style="width: 200px;" placeholder="Search...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Table -->
+                    <div class="table-wrapper">
+                        <table id="kesalahanTable" class="table table-striped table-hover" style="width:100%">
+                            <thead class="table">
+                                <tr>
+                                    <th hidden>ID</th>
+                                    <th class="sortable" data-column="1">Staff ID</th>
+                                    <th class="sortable" data-column="2">Name</th>
+                                    <th class="sortable" data-column="3">Jabatan</th>
+                                    <th class="sortable" data-column="4">Syarikat</th>
+                                    <th class="sortable" data-column="5">Date</th>
+                                    <th class="sortable" data-column="6">Jenis Kesalahan</th>
+                                    @if (ViewBag.ShowSemakanColumns == true)
+                                    {
+                                        <th class="sortable" data-column="7">Exclude</th>
+                                        <th class="sortable" data-column="8">ID Semakan</th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                @foreach (var item in Model.ExistingKesalahanRecords)
+                                {
+                                    <tr>
+                                        <td hidden>@item.Id</td>
+                                        <td>@item.IdStaff</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Jab</td>
+                                        <td>@item.Syrt</td>
+                                        <td data-order="@item.Trk.ToString("yyyy-MM-dd")">@item.Trk.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <span class="badge @GetJenisKesalahanBadgeClass(item.JenisKesalahan)">
+                                                @(item.JenisKesalahan ?? "-")
+                                            </span>
+                                        </td>
+                                        @if (ViewBag.ShowSemakanColumns == true)
+                                        {
+                                            <td>
+                                                @if (item.Exclude.HasValue)
+                                                {
+                                                    <span class="badge @(item.Exclude.Value ? "bg-danger" : "bg-success")">
+                                                        @(item.Exclude.Value ? "Yes" : "No")
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.IdSemakan.HasValue)
+                                                {
+                                                    <a href="javascript:void(0)"
+                                                       class="text-decoration-none semakan-link"
+                                                       data-id-semakan="@item.IdSemakan"
+                                                       title="Click to view details">
+                                                        <i class="fas fa-external-link-alt me-1"></i>
+                                                        @item.IdSemakan
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+
+                        <!-- No Results Message -->
+                        <div id="noResults" class="no-results" style="display: none;">
+                            <i class="fas fa-search fa-2x mb-3"></i>
+                            <p>No matching records found.</p>
+                        </div>
+                    </div>
+
+                    <!-- Pagination Info and Controls -->
+                    <div class="pagination-info">
+                        <div id="tableInfo">
+                            Showing 0 to 0 of 0 entries
+                        </div>
+                        <nav>
+                            <ul class="pagination pagination-sm" id="pagination">
+                                <!-- Pagination buttons will be generated here -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- jQuery -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+                <!-- Bootstrap JS -->
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+                <script>
+                    $(document).ready(function () {
+                        let allRows = [];
+                        let filteredRows = [];
+                        let currentPage = 1;
+                        let rowsPerPage = 10;
+                        let currentSort = { column: -1, direction: 'asc' };
+
+                        // Initialize
+                        function init() {
+                            // Store all rows
+                            $('#tableBody tr').each(function () {
+                                allRows.push($(this));
+                            });
+                            filteredRows = [...allRows];
+                            updateTable();
+                        }
+
+                        // Search functionality
+                        $('#searchInput').on('keyup', function () {
+                            const searchTerm = $(this).val().toLowerCase();
+
+                            if (searchTerm === '') {
+                                filteredRows = [...allRows];
+                            } else {
+                                filteredRows = allRows.filter(function (row) {
+                                    return row.text().toLowerCase().includes(searchTerm);
+                                });
+                            }
+
+                            currentPage = 1;
+                            updateTable();
+                        });
+
+                        // Entries per page change
+                        $('#entriesSelect').on('change', function () {
+                            rowsPerPage = parseInt($(this).val());
+                            currentPage = 1;
+                            updateTable();
+                        });
+
+                        // Sorting functionality
+                        $('.sortable').on('click', function () {
+                            const column = parseInt($(this).data('column'));
+
+                            if (currentSort.column === column) {
+                                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                            } else {
+                                currentSort.column = column;
+                                currentSort.direction = 'asc';
+                            }
+
+                            // Update sort indicators
+                            $('.sortable').removeClass('asc desc');
+                            $(this).addClass(currentSort.direction);
+
+                            sortRows();
+                            updateTable();
+                        });
+
+                        // Sort rows
+                        function sortRows() {
+                            if (currentSort.column === -1) return;
+
+                            filteredRows.sort(function (a, b) {
+                                let aVal = a.find('td').eq(currentSort.column).text().trim();
+                                let bVal = b.find('td').eq(currentSort.column).text().trim();
+
+                                // Handle date sorting
+                                if (currentSort.column === 5) {
+                                    aVal = a.find('td').eq(currentSort.column).data('order') || aVal;
+                                    bVal = b.find('td').eq(currentSort.column).data('order') || bVal;
+                                }
+
+                                // Handle numeric values
+                                if (!isNaN(aVal) && !isNaN(bVal)) {
+                                    aVal = parseFloat(aVal);
+                                    bVal = parseFloat(bVal);
+                                }
+
+                                if (aVal < bVal) return currentSort.direction === 'asc' ? -1 : 1;
+                                if (aVal > bVal) return currentSort.direction === 'asc' ? 1 : -1;
+                                return 0;
+                            });
+                        }
+
+                        // Update table display
+                        function updateTable() {
+                            const totalRows = filteredRows.length;
+
+                            if (totalRows === 0) {
+                                $('#tableBody').hide();
+                                $('#noResults').show();
+                                $('#pagination').empty();
+                                $('#tableInfo').text('Showing 0 to 0 of 0 entries');
+                                return;
+                            }
+
+                            $('#tableBody').show();
+                            $('#noResults').hide();
+
+                            // Calculate pagination
+                            const totalPages = rowsPerPage === -1 ? 1 : Math.ceil(totalRows / rowsPerPage);
+                            const startIndex = rowsPerPage === -1 ? 0 : (currentPage - 1) * rowsPerPage;
+                            const endIndex = rowsPerPage === -1 ? totalRows : Math.min(startIndex + rowsPerPage, totalRows);
+
+                            // Clear table body
+                            $('#tableBody').empty();
+
+                            // Add visible rows
+                            for (let i = startIndex; i < endIndex; i++) {
+                                $('#tableBody').append(filteredRows[i]);
+                            }
+
+                            // Update info
+                            $('#tableInfo').text(`Showing ${startIndex + 1} to ${endIndex} of ${totalRows} entries`);
+
+                            // Update pagination
+                            updatePagination(totalPages);
+                        }
+
+                        // Update pagination controls
+                        function updatePagination(totalPages) {
+                            const pagination = $('#pagination');
+                            pagination.empty();
+
+                            if (totalPages <= 1) return;
+
+                            // Previous button
+                            pagination.append(`
+                                        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a>
+                                        </li>
+                                    `);
+
+                            // Page numbers
+                            let startPage = Math.max(1, currentPage - 2);
+                            let endPage = Math.min(totalPages, currentPage + 2);
+
+                            for (let i = startPage; i <= endPage; i++) {
+                                pagination.append(`
+                                            <li class="page-item ${i === currentPage ? 'active' : ''}">
+                                                <a class="page-link" href="#" data-page="${i}">${i}</a>
+                                            </li>
+                                        `);
+                            }
+
+                            // Next button
+                            pagination.append(`
+                                        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                                            <a class="page-link" href="#" data-page="${currentPage + 1}">Next</a>
+                                        </li>
+                                    `);
+                        }
+
+                        // Pagination click handler
+                        $(document).on('click', '.page-link', function (e) {
+                            e.preventDefault();
+                            const page = parseInt($(this).data('page'));
+                            if (page && page !== currentPage) {
+                                currentPage = page;
+                                updateTable();
+                            }
+                        });
+
+                        // Handle semakan link clicks
+                        $(document).on('click', '.semakan-link', function () {
+                            var idSemakan = $(this).data('id-semakan');
+                            console.log('Semakan ID clicked:', idSemakan);
+                            // Add your semakan link click handler here
+                        });
+
+                        // Initialize the table
+                        init();
+                    });
+                </script>
+                </div>
+            </div>
+        </div>
+
+}
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+
+<!-- DataTables JS -->
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+
+<script>
+    // Initialize DataTables when page loads
+    document.addEventListener('DOMContentLoaded', function () {
+        // Check if existing table exists
+        if (document.getElementById('existingTable')) {
+            initializeDataTable();
+        }
+    });
+
+    function initializeDataTable() {
+        $('#existingTable').DataTable({
+            "responsive": true,
+            "lengthChange": true,
+            "autoWidth": false,
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[5, "desc"]], // Order by date column (descending)
+            "language": {
+                "lengthMenu": "Papar _MENU_ entri",
+                "zeroRecords": "Tiada rekod dijumpai",
+                "info": "Memaparkan _START_ hingga _END_ daripada _TOTAL_ entri",
+                "infoEmpty": "Memaparkan 0 hingga 0 daripada 0 entri",
+                "infoFiltered": "(ditapis daripada _MAX_ jumlah entri)",
+                "search": "Cari:",
+                "paginate": {
+                    "first": "Pertama",
+                    "last": "Terakhir",
+                    "next": "Seterusnya",
+                    "previous": "Sebelumnya"
+                }
+            },
+            "columnDefs": [
+                {
+                    "targets": [0], // Hide ID column
+                    "visible": false
+                },
+                {
+                    "targets": [5], // Date column
+                    "type": "date"
+                }
+            ]
+        });
+
+        // Handle semakan links if they exist
+        $(document).on('click', '.semakan-link', function (e) {
+            e.preventDefault();
+            const idSemakan = $(this).data('id-semakan');
+            // Add your semakan link handling logic here
+            console.log('Clicked semakan ID:', idSemakan);
+        });
+    }
+</script>
+
+@if (ViewBag.Searched == true)
+{
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mt-4" id="recordTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" style="color:black" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab">
+                <i class="fas fa-clock"></i> Rekod Kedatangan (@Model.ViewRecords.Count)
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="kesalahan-tab" style="color:black" data-bs-toggle="tab" data-bs-target="#kesalahan" type="button" role="tab">
+                <i class="fas fa-exclamation-triangle"></i> Masalah (@Model.KesalahanRecords.Count)
+            </button>
+        </li>
+
+    </ul>
+
+    <div class="tab-content" id="recordTabsContent">
+        <!-- Attendance Records Tab -->
+        <div class="tab-pane fade show active" id="attendance" role="tabpanel">
+            @if (Model.ViewRecords.Any())
+            {
+                <div class="mt-4">
+                    <!-- Display selected users info -->
+                    @if (Model.SelectedUserIds != null && Model.SelectedUserIds.Any())
+                    {
+                        <div class="alert alert-info mb-3">
+                            <strong>Menunjukkan rekod untuk pengguna yang dipilih:</strong>
+                            @string.Join(", ", Model.SelectedUserIds)
+                            <span class="ms-2">
+                                <small class="text-muted">(@Model.SelectedUserIds.Count pengguna dipilih)</small>
+                            </span>
+                        </div>
+                    }
+
+                    <!-- Search and Filter Controls for Attendance -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <input type="text" id="attendanceTableSearch" class="form-control" placeholder="Cari..." />
+                        </div>
+                        <div class="col-md-3">
+                            <select id="attendanceEntriesPerPage" class="form-select">
+                                <option value="10">Papar 10 entri</option>
+                                <option value="25">Papar 25 entri</option>
+                                <option value="50">Papar 50 entri</option>
+                                <option value="-1">Semua</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="statusFilter" class="form-select">
+                                <option value="">Semua Status</option>
+                                <option value="Y">Status Y</option>
+                                <option value="N">Status N</option>
+                                <option value="">Null</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table id="attendanceTable" class="table table-striped table-hover" style="min-width: 800px;">
+                            <thead class="table">
+                                <style>
+                                    .minimal-sort-btn {
+                                        background: none;
+                                        border: none;
+                                        color: black;
+                                        font-weight: bold;
+                                        cursor: pointer;
+                                    }
+
+                                    .selected-user-row {
+                                        background-color: #e8f4f8 !important;
+                                        border-left: 4px solid #0d6efd;
+                                    }
+                                </style>
+                                <tr>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="0">ID Staf <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="1">Nama <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="2">Syarikat <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="3">Jabatan <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="4">Bahagian <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="5">Tarikh <i class="fas fa-sort"></i></button></th>
+
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="6">Roster T(IN) <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="8">Roster T(OUT) <i class="fas fa-sort"></i></button></th>
+
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="7">Masa Masuk <i class="fas fa-sort"></i></button></th>
+
+
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="9">Masa Keluar <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="10">Status Masuk <i class="fas fa-sort"></i></button></th>
+                                    <th><button class="btn btn-link p-0 text-decoration-none minimal-sort-btn attendance-sort-btn" data-column="11">Status Keluar <i class="fas fa-sort"></i></button></th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody">
+                                @foreach (var item in Model.ViewRecords)
+                                {
+                                    var isSelectedUser = Model.SelectedUserIds != null && Model.SelectedUserIds.Contains(item.idstaff);
+                                    <tr data-date="@item.Tarikh.ToString("yyyy-MM-dd HH:mm:ss")"
+                                        data-status-in="@(item.StatusIn ?? "")"
+                                        data-status-out="@(item.StatusOut ?? "")"
+                                        class="@(isSelectedUser ? "selected-user-row" : "")">
+                                        <td>
+                                            @if (isSelectedUser)
+                                            {
+                                                <strong>@item.idstaff</strong>
+                                                <i class="fas fa-check-circle text-primary ms-1" title="Pengguna dipilih"></i>
+                                            }
+                                            else
+                                            {
+                                                @item.idstaff
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (isSelectedUser)
+                                            {
+                                                <strong>@item.Nama</strong>
+                                            }
+                                            else
+                                            {
+                                                @item.Nama
+                                            }
+                                        </td>
+                                        <td>@item.Syrt</td>
+                                        <td>@item.Jab</td>
+                                        <td>@item.Bhgn</td>
+                                        <td>@item.Tarikh.ToString("dd/MM/yyyy")</td>
+
+                                        <td>@item.Roster_TImeIn?.ToString("HH:mm tt")</td>
+                                        <td>@item.Roster_Timeout?.ToString("HH:mm tt")</td>
+
+
+
+                                        <td>
+                                            @if (item.TimeIn.HasValue)
+                                            {
+                                                @item.TimeIn.Value.ToString("hh:mm tt")
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.TimeOut.HasValue)
+                                            {
+                                                @item.TimeOut.Value.ToString("hh:mm tt")
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.StatusIn))
+                                            {
+                                                <span class="badge @(item.StatusIn == "Y" ? "bg-success" : "bg-danger")">
+                                                    @item.StatusIn
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.StatusOut))
+                                            {
+                                                <span class="badge @(item.StatusOut == "Y" ? "bg-success" : "bg-danger")">
+                                                    @item.StatusOut
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">-</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination for Attendance -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div id="attendanceTableInfo" class="text-muted"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <nav>
+                                <ul id="attendancePagination" class="pagination justify-content-end"></ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info mt-4">
+                    <i class="fas fa-info-circle"></i> Tiada rekod dijumpai pada kriteria ini.
+                </div>
+            }
+        </div>
+        <br />
+        <!-- ATT Kesalahan Records Tab -->
+        <div class="tab-pane fade" id="kesalahan" role="tabpanel">
+            <div class="d-flex gap-2 mb-3">
+                <!-- Form 1: Proses Semakan -->
+                <form asp-action="ProcessAllSemakanMatches" asp-controller="ProsesSemakan" method="post" id="prosesForm">
+                    <!-- Hidden fields -->
+                    <input type="hidden" name="searchIdStaff" value="@Model.SearchIdStaff" />
+                    <input type="hidden" name="searchNama" value="@Model.SearchNama" />
+                    <input type="hidden" name="dateFrom" value="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" />
+                    <input type="hidden" name="dateTo" value="@(Model.DateTo?.ToString("yyyy-MM-dd"))" />
+                    <input type="hidden" name="activeTab" value="kesalahan" />
+
+
+
+               @*      @if (ViewBag.PassedId != null)
+                    {
+                        <div class="alert alert-info" style="none">
+                            ID passed: @ViewBag.PassedId
+                        </div>
+                    }
+ *@
+                    <input type="hidden" name="SelectedRecordId" value="@Model.SelectedRecordId" />
+
+                    <script>
+                        document.getElementById('prosesForm').addEventListener('submit', function (e) {
+                            var selectedRecordIdInput = document.querySelector('input[name="SelectedRecordId"]');
+
+                            if (!selectedRecordIdInput.value) {
+                                // Get the ProfileId from somewhere (e.g., from another element, localStorage, etc.)
+                                var profileId = getProfileIdFromSomewhere(); // Implement this function
+                                selectedRecordIdInput.value = profileId;
+                            }
+                        });
+
+                        function getProfileIdFromSomewhere() {
+                            // Example: get from a data attribute, another hidden field, or make an AJAX call
+                            return document.querySelector('[data-profile-id]')?.getAttribute('data-profile-id') || '';
+                        }
+                    </script>
+
+
+                    @if (Model.SelectedUserIds != null && Model.SelectedUserIds.Any())
+                    {
+                        @foreach (var userId in Model.SelectedUserIds)
+                        {
+                            <input type="hidden" name="SelectedUserIds" value="@userId" />
+                        }
+                    }
+
+
+                    <button type="submit" id="prosesBtn" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="btn-text">
+                            <i class="fas fa-cogs"></i> Proses Semakan Ketidakhadiran (Cuti Umum + Borang A + Borang C + Tugasan + Cuti Skokraf)
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Form 2: Senarai Permohonan -->
+                <form asp-controller="SemakanPage" asp-action="Semakan" method="get" target="_blank">
+                    <input type="hidden" name="searchIdStaff" value="@Model.SearchIdStaff" />
+                    <input type="hidden" name="searchNama" value="@Model.SearchNama" />
+                    <input type="hidden" name="dateFrom" value="@(Model.DateFrom?.ToString("yyyy-MM-dd"))" />
+                    <input type="hidden" name="dateTo" value="@(Model.DateTo?.ToString("yyyy-MM-dd"))" />
+
+                    @if (Model.SelectedUserIds != null && Model.SelectedUserIds.Any())
+                    {
+                        foreach (var userId in Model.SelectedUserIds)
+                        {
+                            <input type="hidden" name="SelectedUserIds" value="@userId" />
+                        }
+                    }
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <span class="btn-text">
+                            <i class="fas fa-tasks"></i> Senarai Permohonan
+                        </span>
+                    </button>
+                </form>
+
+
+                <script>
+    const form = document.querySelector("form");
+    form.addEventListener("submit", function () {
+        const spinner = form.querySelector(".spinner-border");
+        const btnText = form.querySelector(".btn-text");
+        spinner.classList.remove("d-none");
+        btnText.classList.add("d-none");
+    });
+</script>
+
+
+            </div>
+
+
+
+            @if (Model.KesalahanRecords.Any())
+            {
+                <div class="mt-4">
+                    <!-- Search and Filter Controls for Kesalahan -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <input type="text" id="kesalahanTableSearch" class="form-control" placeholder="Cari..." />
+                        </div>
+                        <div class="col-md-3">
+                            <select id="kesalahanEntriesPerPage" class="form-select">
+                                <option value="10">Papar 10 entri</option>
+                                <option value="25">Papar 25 entri</option>
+                                <option value="50">Papar 50 entri</option>
+                                <option value="-1">Semua</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select id="jenisFilter" class="form-select">
+                                <option value="">Semua Jenis Kesalahan</option>
+                                <option value="Ponteng">Ponteng</option>
+                                <option value="Ponteng Separuh Hari (TimeIn)">Ponteng Separuh Hari (TimeIn)</option>
+                                <option value="Ponteng Separuh Hari (TimeOut)">Ponteng Separuh Hari (TimeOut)</option>
+                              @*   <option value="Ponteng Separuh Hari (TimeIn dan TimeOut)">Ponteng Separuh Hari (TimeIn dan TimeOut)</option> *@
+                                <option value="Tiada TimeIn">Tiada Punch In</option>
+                                <option value="Tiada TimeOut">Tiada Punch Out</option>
+                                <option value="Datang Lewat">Datang Lewat</option>
+                                <option value="Balik Awal">Balik Awal</option>
+                        @*         <option value="OK">OK</option> *@
+                                <option value="Masalah Belum Dikenalpasti">Tiada Kenyataan</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table id="kesalahanTable" class="table table-striped table-hover" style="min-width: 900px;">
+                            <thead class="table">
+                                <tr>
+                                    <th hidden>
+                                        <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="0">ID <i class="fas fa-sort"></i></button>
+                                    </th>
+                                    <th>
+                                        <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="1">Staff ID <i class="fas fa-sort"></i></button>
+                                    </th>
+                                    <th>
+                                        <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="2">Name <i class="fas fa-sort"></i></button>
+                                    </th>
+                                    <th>
+                                        <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="3">Jabatan <i class="fas fa-sort"></i></button>
+                                    </th>
+                                    <th>
+                                        <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="4">Syarikat <i class="fas fa-sort"></i></button>
+                                    </th>
+                                    <th>
+                                        <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="5">Date <i class="fas fa-sort"></i></button>
+                                    </th>
+                                    <th>
+                                        <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="6">Jenis Kesalahan <i class="fas fa-sort"></i></button>
+                                    </th>
+
+                                    @if (ViewBag.ShowSemakanColumns == true)
+                                    {
+                                        <th>
+                                            <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="7">Exclude <i class="fas fa-sort"></i></button>
+                                        </th>
+                                        <th>
+                                            <button class="btn btn-link p-0 text-decoration-none minimal-sort-btn kesalahan-sort-btn" data-column="8">ID Semakan <i class="fas fa-sort"></i></button>
+                                        </th>
+                                    }
+                                </tr>
+                            </thead>
+                            <tbody id="kesalahanTableBody">
+                                @foreach (var item in Model.KesalahanRecords)
+                                {
+                                    <tr data-date="@item.Trk.ToString("yyyy-MM-dd")"
+                                        data-jenis="@(item.JenisKesalahan ?? "")"
+                                    @if (ViewBag.ShowSemakanColumns == true)
+                                    {
+                                        @: data-exclude="@(item.Exclude == null ? "null" : item.Exclude.ToString().ToLower())"
+                                        @: data-id-semakan="@(item.IdSemakan == null ? "null" : item.IdSemakan.ToString())"
+                                    }>
+
+                                        <td hidden>@item.Id</td>
+                                        <td>@item.IdStaff</td>
+                                        <td>@item.Name</td>
+                                        <td>@item.Jab</td>
+                                        <td>@item.Syrt</td>
+                                        <td>@item.Trk.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <span class="badge @GetJenisKesalahanBadgeClass(item.JenisKesalahan)">
+                                                @(item.JenisKesalahan ?? "-")
+                                            </span>
+                                        </td>
+
+                                        @if (ViewBag.ShowSemakanColumns == true)
+                                        {
+                                            <td>
+                                                @if (item.Exclude.HasValue)
+                                                {
+                                                    <span class="badge @(item.Exclude.Value ? "bg-danger" : "bg-success")">
+                                                        @(item.Exclude.Value ? "Yes" : "No")
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (item.IdSemakan.HasValue)
+                                                {
+                                                    <a href="javascript:void(0)"
+                                                       class="text-decoration-none semakan-link"
+                                                       data-id-semakan="@item.IdSemakan"
+                                                       title="Click to view details">
+                                                        <i class="fas fa-external-link-alt me-1"></i>
+                                                        @item.IdSemakan
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-muted">-</span>
+                                                }
+                                            </td>
+                                        }
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination for Kesalahan -->
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div id="kesalahanTableInfo" class="text-muted"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <nav>
+                                <ul id="kesalahanPagination" class="pagination justify-content-end"></ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-warning mt-4">
+                    <i class="fas fa-exclamation-triangle"></i> Tiada rekod dijumpai pada kriteria ini.
+                </div>
+            }
+        </div>
+
+    </div>
+}
+
+<!-- Add this modal to your main view (before the closing body tag) -->
+<div class="modal fade" id="semakanModal" tabindex="-1" aria-labelledby="semakanModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="semakanModalLabel">
+                    <i class="fas fa-clipboard-check"></i> Butiran
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="semakanModalBody">
+                <!-- Content will be loaded here -->
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i> Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Handle semakan link clicks
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.semakan-link')) {
+                e.preventDefault();
+
+                const link = e.target.closest('.semakan-link');
+                const idSemakan = link.getAttribute('data-id-semakan');
+
+                if (idSemakan) {
+                    showSemakanDetails(idSemakan);
+                }
+            }
+        });
+
+        function showSemakanDetails(idSemakan) {
+            // Show loading state
+            const modalBody = document.getElementById('semakanModalBody');
+            modalBody.innerHTML = `
+                <div class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading semakan details...</p>
+                </div>
+            `;
+
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('semakanModal'));
+            modal.show();
+
+            // Load content via AJAX
+            fetch(`@Url.Action("GetSemakanDetails", "AttKesalahan")?idSemakan=${idSemakan}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    modalBody.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error loading semakan details:', error);
+                    modalBody.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Error:</strong> Unable to load semakan details. Please try again.
+                            <br><small class="text-muted">Error: ${error.message}</small>
+                        </div>
+                    `;
+                });
+        }
+    });
+</script>
+@functions {
+    private string GetJenisKesalahanBadgeClass(string jenisKesalahan)
+    {
+        return jenisKesalahan switch
+        {
+            "Ponteng" => "bg-danger",
+            "Ponteng Separuh Hari (TimeIn)" => "bg-warning text-dark",
+            "Ponteng Separuh Hari (TimeOut)" => "bg-warning text-dark",
+            "Ponteng Separuh Hari (TimeIn dan TimeOut)" => "bg-danger",
+            "Tiada TimeIn" => "bg-warning text-dark",
+            "Tiada TimeOut" => "bg-warning text-dark",
+            "Tiada TimeIn dan TimeOut" => "bg-danger",
+            "Masalah StatusIn" => "bg-info",
+            "Masalah StatusOut" => "bg-info",
+            "Datang Lewat" => "bg-secondary",
+            "Balik Awal" => "bg-secondary",
+            "OK" => "bg-success",
+            "Masalah Belum Dikenalpasti" => "bg-success",
+            _ => "bg-dark"
+        };
+    }
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialize both tables (your existing code)
+        initializeTable('attendance');
+        initializeTable('kesalahan');
+
+        const prosesForm = document.getElementById('prosesForm');
+        const prosesBtn = document.getElementById('prosesBtn');
+
+        if (prosesForm && prosesBtn) {
+            prosesForm.addEventListener('submit', function (e) {
+                showButtonLoading(prosesBtn);
+                showGlobalLoading();
+
+                const progressStatus = document.getElementById('progressStatus');
+                const selectedUserInputs = document.querySelectorAll('input[name="SelectedUserIds"]:checked');
+                const idStaffInput = document.getElementById('idStaffInput');
+                const idStaffValue = idStaffInput ? idStaffInput.value.trim() : "";
+                const userCount = selectedUserInputs.length;
+
+                if (userCount > 0) {
+
+                    let current = 1;
+                    progressStatus.textContent = `${current} daripada ${userCount} pengguna telah diproses...`;
+
+                    const interval = setInterval(() => {
+                        current++;
+                        if (current > userCount) {
+                            clearInterval(interval);
+                            progressStatus.textContent = `Kesemua ${userCount} pengguna telah diproses.`;
+                        } else {
+                            progressStatus.textContent = `${current} daripada ${userCount} pengguna telah siap diproses...`;
+                        }
+                    }, 1000);
+                } else if (idStaffValue !== "") {
+                    // ✅ Only one user via ID Staff input
+                    progressStatus.textContent = `1 pengguna telah dipilih...`;
+                } else {
+                    // ❌ No user selected
+                    progressStatus.textContent = `Tiada pengguna yang telah dipilih.`;
+                }
+            });
+        }
+
+    });
+
+    function showGlobalLoading() {
+        document.getElementById('globalLoading').classList.remove('hidden');
+    }
+
+    function hideGlobalLoading() {
+        document.getElementById('globalLoading').classList.add('hidden');
+    }
+
+    function showButtonLoading(button) {
+        button.classList.add('btn-loading');
+        button.disabled = true;
+
+        const spinner = button.querySelector('.spinner-border');
+        const text = button.querySelector('.btn-text');
+
+        if (spinner) spinner.classList.remove('d-none');
+        if (text) text.style.opacity = '0';
+    }
+
+    function hideButtonLoading(button) {
+        button.classList.remove('btn-loading');
+        button.disabled = false;
+
+        const spinner = button.querySelector('.spinner-border');
+        const text = button.querySelector('.btn-text');
+
+        if (spinner) spinner.classList.add('d-none');
+        if (text) text.style.opacity = '1';
+    }
+
+    // For AJAX requests (if you want to use AJAX instead of form submission)
+    function performAjaxSearch() {
+        const formData = new FormData(document.getElementById('searchForm'));
+
+        showGlobalLoading();
+        showButtonLoading(document.getElementById('searchBtn'));
+
+        fetch('/AttKesalahan/Search', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())
+            .then(html => {
+                // Update the page content with the returned HTML
+                document.body.innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while searching. Please try again.');
+            })
+            .finally(() => {
+                hideGlobalLoading();
+                hideButtonLoading(document.getElementById('searchBtn'));
+            });
+    }
+
+
+    function initializeTable(tableType) {
+        const table = document.getElementById(tableType + 'Table');
+        const tbody = document.getElementById(tableType + 'TableBody');
+        const searchInput = document.getElementById(tableType + 'TableSearch');
+        const entriesSelect = document.getElementById(tableType + 'EntriesPerPage');
+        const tableInfo = document.getElementById(tableType + 'TableInfo');
+        const pagination = document.getElementById(tableType + 'Pagination');
+
+        if (!table || !tbody) return;
+
+        let allRows = Array.from(tbody.querySelectorAll('tr'));
+        let filteredRows = [...allRows];
+        let currentPage = 1;
+        let entriesPerPage = 10;
+        let sortColumn = -1;
+        let sortDirection = 'asc';
+
+        // Additional filter for attendance table
+        const statusFilter = tableType === 'attendance' ? document.getElementById('statusFilter') : null;
+        // Additional filter for kesalahan table
+        const jenisFilter = tableType === 'kesalahan' ? document.getElementById('jenisFilter') : null;
+
+        // Search functionality
+        if (searchInput) {
+            searchInput.addEventListener('input', function () {
+                filterTable();
+            });
+        }
+
+        // Entries per page
+        if (entriesSelect) {
+            entriesSelect.addEventListener('change', function () {
+                entriesPerPage = parseInt(this.value);
+                currentPage = 1;
+                displayTable();
+            });
+        }
+
+        // Additional filters
+        if (statusFilter) {
+            statusFilter.addEventListener('change', function () {
+                filterTable();
+            });
+        }
+
+        if (jenisFilter) {
+            jenisFilter.addEventListener('change', function () {
+                filterTable();
+            });
+        }
+
+        // Sort functionality
+        document.querySelectorAll('.' + tableType + '-sort-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const column = parseInt(this.dataset.column);
+                if (sortColumn === column) {
+                    sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortColumn = column;
+                    sortDirection = 'asc';
+                }
+
+                // Update sort icons for this table only
+                document.querySelectorAll('.' + tableType + '-sort-btn i').forEach(icon => {
+                    icon.className = 'fas fa-sort';
+                });
+                this.querySelector('i').className = sortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+
+                sortTable();
+            });
+        });
+
+        function filterTable() {
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+            filteredRows = allRows.filter(row => {
+                const text = row.textContent.toLowerCase();
+                const matchesSearch = !searchTerm || text.includes(searchTerm);
+                let matchesFilter = true;
+
+                // Attendance filter
+                if (tableType === 'attendance' && statusFilter) {
+                    const statusValue = statusFilter.value;
+                    if (statusValue) {
+                        const statusIn = row.dataset.statusIn;
+                        const statusOut = row.dataset.statusOut;
+                        matchesFilter = statusIn === statusValue || statusOut === statusValue;
+                    }
+                }
+
+                // Kesalahan filter
+                if (tableType === 'kesalahan' && jenisFilter) {
+                    const jenisValue = jenisFilter.value;
+                    if (jenisValue) {
+                        if (jenisValue === 'Masalah Belum Dikenalpasti') {
+                            // Special case for unidentified issues
+                            const excludeValue = row.dataset.exclude;
+                            const idSemakanValue = row.dataset.idSemakan;
+
+                            // Check if both Exclude is null/false AND IdSemakan is null/empty
+                            const excludeIsNullOrFalse = (
+                                excludeValue === 'null' ||
+                                excludeValue === '' ||
+                                excludeValue === 'false' ||
+                                excludeValue === undefined ||
+                                excludeValue === 'undefined' ||
+                                !excludeValue
+                            );
+
+                            const idSemakanIsNullOrEmpty = (
+                                idSemakanValue === '' ||
+                                idSemakanValue === 'null' ||
+                                idSemakanValue === undefined ||
+                                idSemakanValue === 'undefined' ||
+                                !idSemakanValue
+                            );
+
+                            // Show rows where BOTH conditions are true (no semakan processing done)
+                            matchesFilter = excludeIsNullOrFalse && idSemakanIsNullOrEmpty;
+
+                        } else {
+                            // Get the actual jenis kesalahan from the data attribute
+                            const jenis = row.dataset.jenis;
+                            matchesFilter = jenis === jenisValue;
+                        }
+                    }
+                }
+
+                return matchesSearch && matchesFilter;
+            });
+
+            currentPage = 1;
+            displayTable();
+        }
+
+        function sortTable() {
+            filteredRows.sort((a, b) => {
+                let aVal = a.cells[sortColumn].textContent.trim();
+                let bVal = b.cells[sortColumn].textContent.trim();
+
+                // Handle date sorting (column 5 - Date)
+                if (sortColumn === 5) {
+                    aVal = a.dataset.date || aVal;
+                    bVal = b.dataset.date || bVal;
+                }
+
+                // Handle numeric sorting for ID columns (0 - ID, 8 - ID Semakan)
+                if (sortColumn === 0 || sortColumn === 8) {
+                    // For ID Semakan, use the data attribute value
+                    if (sortColumn === 8) {
+                        aVal = a.dataset.idSemakan || '';
+                        bVal = b.dataset.idSemakan || '';
+                        // Convert to number if it's a valid number, otherwise treat as string
+                        const aNum = parseInt(aVal);
+                        const bNum = parseInt(bVal);
+                        if (!isNaN(aNum) && !isNaN(bNum)) {
+                            aVal = aNum;
+                            bVal = bNum;
+                        }
+                    } else {
+                        aVal = parseInt(aVal) || 0;
+                        bVal = parseInt(bVal) || 0;
+                    }
+                }
+
+                // Handle Jenis Kesalahan sorting (column 6)
+                if (sortColumn === 6) {
+                    // Extract text from badge spans for proper sorting
+                    const aBadge = a.cells[sortColumn].querySelector('.badge');
+                    const bBadge = b.cells[sortColumn].querySelector('.badge');
+                    aVal = aBadge ? aBadge.textContent.trim() : aVal;
+                    bVal = bBadge ? bBadge.textContent.trim() : bVal;
+                }
+
+                // Perform comparison
+                if (typeof aVal === 'number' && typeof bVal === 'number') {
+                    return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
+                } else {
+                    // String comparison
+                    aVal = String(aVal).toLowerCase();
+                    bVal = String(bVal).toLowerCase();
+
+                    if (aVal < bVal) return sortDirection === 'asc' ? -1 : 1;
+                    if (aVal > bVal) return sortDirection === 'asc' ? 1 : -1;
+                    return 0;
+                }
+            });
+
+            displayTable();
+        }
+
+        function displayTable() {
+            if (!tbody) return;
+
+            // Clear tbody
+            tbody.innerHTML = '';
+
+            // Calculate pagination
+            const totalRows = filteredRows.length;
+            const totalPages = entriesPerPage === -1 ? 1 : Math.ceil(totalRows / entriesPerPage);
+            const startIndex = entriesPerPage === -1 ? 0 : (currentPage - 1) * entriesPerPage;
+            const endIndex = entriesPerPage === -1 ? totalRows : Math.min(startIndex + entriesPerPage, totalRows);
+
+            // Display rows
+            for (let i = startIndex; i < endIndex; i++) {
+                if (filteredRows[i]) {
+                    tbody.appendChild(filteredRows[i].cloneNode(true));
+                }
+            }
+
+            // Update info
+            if (tableInfo) {
+                tableInfo.textContent = `Showing ${startIndex + 1} to ${endIndex} of ${totalRows} entries`;
+            }
+
+            // Update pagination
+            updatePagination(totalPages);
+        }
+
+        function updatePagination(totalPages) {
+            if (!pagination) return;
+
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            // Previous button
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = '<a class="page-link" href="#">Previous</a>';
+            prevLi.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayTable();
+                }
+            });
+            pagination.appendChild(prevLi);
+
+            // Page numbers (show max 5 pages)
+            const maxPagesToShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+            if (endPage - startPage + 1 < maxPagesToShow) {
+                startPage = Math.max(1, endPage - maxPagesToShow + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    currentPage = i;
+                    displayTable();
+                });
+                pagination.appendChild(li);
+            }
+
+            // Next button
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = '<a class="page-link" href="#">Next</a>';
+            nextLi.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayTable();
+                }
+            });
+            pagination.appendChild(nextLi);
+        }
+
+        // Initial display
+        displayTable();
+    }
+</script>

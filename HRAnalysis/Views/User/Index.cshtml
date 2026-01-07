@@ -1,0 +1,162 @@
+﻿@model IEnumerable<HRAnalysis.Models.tbl_AttUser>
+
+@{
+    ViewData["Title"] = "Senarai Pengguna";
+}
+<br />
+
+
+<div class="row">
+    <div class="col">
+        <p>
+
+          
+            <a asp-action="Create" class="btn btn-danger mb-3">Tambah</a>
+
+        </p>
+    </div>
+</div>
+
+
+<!-- Responsive table container -->
+<div class="table-responsive">
+    <table class="table table-striped table-bordered w-100" id="usersTable">
+        <thead>
+            <tr>
+                <th style="text-align: center;">Nama</th>
+                <th style="text-align: center;">Username</th>
+                <th style="text-align: center;">Id Staff</th>
+                <th style="text-align: center;">Aktif</th>
+                <th style="text-align: center;">Sekat Pengguna</th>
+                <th style="text-align: center;">Windows</th>
+                <th style="text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FullName</td>
+                    <td>@item.Username</td>
+                    <td>@item.IdStaff</td>
+                    <td>@Html.Raw(item.Active ? "<span style='color:green;'>Ya</span>" : "<span style='color:red;'>Tidak</span>")</td>
+              
+                    <td>@Html.Raw(item.BlockUser ? "<span style='color:green;'>Ya</span>" : "<span style='color:red;'>Tidak</span>")</td>
+                    <td>@Html.Raw(item.UseWindowsAuth ? "<span style='color:green;'>Ya</span>" : "<span style='color:red;'>Tidak</span>")</td>
+
+                    <td>
+                       
+                        <a asp-action="Edit" asp-controller="User" asp-route-id="@item.IdUser" class="btn btn-primary" title="Kemaskini">
+                            <i class="fas fa-edit"></i>
+                        </a>
+
+                        <button class="btn btn-danger delete-link" data-id="@item.IdUser" title="Padam">
+                            <i class="fas fa-trash"></i>
+                        </button>
+
+                      
+                    </td>
+
+                </tr>
+
+
+                <!-- Delete User Modal -->
+                <div class="modal fade" id="deleteModal-@item.IdUser" tabindex="-1" aria-labelledby="deleteModalLabel-@item.IdUser" aria-hidden="true">
+
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel-@item.Username">Confirm Delete -@item.Username</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              Adakah anda ingin memadam maklumat ini? Username : @item.Username
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                <button type="button" class="btn btn-danger confirm-delete" data-id="@item.IdUser">Padam</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </tbody>
+    </table>
+</div>
+@section scripts {
+    <!-- DataTables CSS and JS -->
+    <link href="https://cdn.datatables.net/1.10.24/css/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Toastr for notifications -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Custom styling for DataTables -->
+    <style>
+        .dataTables_info {
+            color: #000 !important; /* Forces black color for the "Showing X entries" text */
+        }
+    </style>
+
+    <script>
+        // Add this JavaScript code to your existing scripts section
+        $(document).ready(function () {
+            // Initialize DataTable
+            var table = $('#usersTable').DataTable({
+                "processing": true,
+                "serverSide": false,
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]]
+            });
+
+            // Delete button click handler
+            $('.delete-link').click(function (e) {
+                e.preventDefault();
+                const userId = $(this).data('id');
+                $(`#deleteModal-${userId}`).modal('show');
+            });
+
+            // Confirm delete button click handler
+            $('.confirm-delete').click(function () {
+                const userId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("Delete", "User")/' + userId,
+
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.success) {
+                            // Hide the modal
+                            $(`#deleteModal-${userId}`).modal('hide');
+
+                            // Show success message
+                            toastr.success('Pengguna berjaya dipadamkan');
+
+                            // Reload the page after a short delay
+                            setTimeout(function () {
+                                location.reload();
+                            }, 1000);
+                        } else {
+                            // Show error message
+                            toastr.error(response.message || 'Masalah memadam pengguna');
+                        }
+                    },
+                    error: function () {
+                        toastr.error('Ralat berlaku semasa memadamkan pengguna');
+                    }
+                });
+            });
+
+            // Configure Toastr options
+            toastr.options = {
+                "closeButton": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "timeOut": "3000"
+            };
+        });
+    </script>
+} 

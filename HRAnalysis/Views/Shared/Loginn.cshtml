@@ -1,0 +1,110 @@
+﻿@{
+    Layout = null; // This prevents the page from using the default layout.
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('~/images/bgg.png') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            color: white;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 10px;
+        }
+
+        .card {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .card-header {
+            border-bottom: 2px solid #fff;
+            text-align: center;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        .form-control {
+            margin-bottom: 15px;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .btn-primary {
+            background-color: #f2921d;
+            border-color: #f2921d;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+            .btn-primary:hover {
+                background-color: #f2cd5c;
+                border-color: #f2cd5c;
+            }
+
+        .alert {
+            background-color: #dc3545;
+            color: white;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 9999; /* Ensure it's on top of everything */
+        }
+
+            #loading-overlay .spinner {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%); /* Perfect centering */
+                font-size: 50px;
+                color: white;
+            }
+
+        .alert {
+            background-color: rgba(220, 53, 69, 0.1); /* Lighter, semi-transparent background */
+            color: #dc3545; /* Keep the red color for text */
+            border-left: 3px solid #dc3545; /* Subtle left border */
+            border-radius: 2px; /* Reduced border radius for minimalist look */
+            padding: 12px 15px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: none; /* Remove shadow for cleaner look */
+        }
+    </style>
+</head>
+<body>
+    @RenderBody() <!-- This renders the content of the view -->
+</body>
+</html>

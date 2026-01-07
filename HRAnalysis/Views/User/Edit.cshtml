@@ -1,0 +1,127 @@
+﻿@model HRAnalysis.Models.tbl_AttUser
+@{
+    ViewData["Title"] = "Kemaskini Pengguna";
+}
+<style>
+    label {
+        color: black;
+    }
+</style>
+<style>
+    .custom-dropdown {
+        appearance: none; /* Removes default browser styling */
+        -webkit-appearance: none; /* Safari */
+        -moz-appearance: none; /* Firefox */
+        background-color: #fff;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10' fill='none'%3E%3Cpath d='M1 3l4 4 4-4' stroke='%23252525' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 10px center;
+        background-size: 12px;
+        padding-right: 30px;
+    }
+
+        .custom-dropdown:focus {
+            outline: none;
+            border-color: #f2921d; /* Example color for focus */
+            box-shadow: 0 0 5px rgba(242, 146, 29, 0.5);
+        }
+</style>
+<br />
+
+<div class="row">
+    <div class="col-md-5">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.HiddenFor(model => model.IdUser)
+            <div class="form-group">
+                <label class="control-label">Nama Penuh</label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label" >Id Staff</label>
+                <input asp-for="IdStaff" class="form-control" readonly />
+                <span asp-validation-for="IdStaff" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Username" class="control-label"></label>
+                <input asp-for="Username" class="form-control" readonly />
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label"></label>
+                <input asp-for="Password" id="passwordInput" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(model => model.UseWindowsAuth, new { @id = "useWindowsAuthCheckbox" })
+                        Pengguna Windows Authentication
+                    </label>
+                    @Html.ValidationMessageFor(model => model.UseWindowsAuth, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <br />
+
+           
+            <div class="form-group">
+                <label asp-for="Roles" class="control-label">Kategori Pengguna</label>
+                <select asp-for="Roles" class="form-control custom-dropdown">
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                </select>
+                <span asp-validation-for="Roles" class="text-danger"></span>
+            </div>
+
+            <br />
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" style="color:white" asp-for="Active" /> Aktif <span class="text-danger">*</span>
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" style="color:white" asp-for="BlockUser" /> Sekat Pengguna
+                </label>
+            </div>
+
+            <br /><br />
+            <div class="form-group d-flex">
+                <button type="submit" class="btn btn-danger me-2" />Simpan</button>
+                <a asp-action="Index" class="btn btn-secondary" style="color:white">Kembali</a>
+            </div>
+        </form>
+
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+        <script>
+            document.getElementById("useWindowsAuthCheckbox").addEventListener("change", function () {
+                var passwordInput = document.getElementById("passwordInput");
+                if (this.checked) {
+                    passwordInput.value = "";
+                    passwordInput.setAttribute("readonly", "readonly");
+                    passwordInput.setAttribute("disabled", "disabled");
+                } else {
+                    passwordInput.removeAttribute("readonly");
+                    passwordInput.removeAttribute("disabled");
+                }
+            });
+
+            // Initialize the password field state on page load
+            window.onload = function () {
+                var useWindowsAuthCheckbox = document.getElementById("useWindowsAuthCheckbox");
+                var passwordInput = document.getElementById("passwordInput");
+                if (useWindowsAuthCheckbox.checked) {
+                    passwordInput.value = "";
+                    passwordInput.setAttribute("readonly", "readonly");
+                    passwordInput.setAttribute("disabled", "disabled");
+                }
+            }
+        </script>
+    }
