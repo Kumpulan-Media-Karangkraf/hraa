@@ -3,8 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\controllers\\prosessemakancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\controllers\\prosessemakancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
       "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\views\\profile\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\views\\profile\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\views\\attkesalahan\\search.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\views\\attkesalahan\\search.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\controllers\\profilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\controllers\\profilecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\controllers\\attkesalahancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -22,7 +38,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,7 +58,59 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
+              "Title": "ProsesSemakanController.cs",
+              "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Controllers\\ProsesSemakanController.cs",
+              "RelativeDocumentMoniker": "HRAnalysis\\Controllers\\ProsesSemakanController.cs",
+              "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Controllers\\ProsesSemakanController.cs",
+              "RelativeToolTip": "HRAnalysis\\Controllers\\ProsesSemakanController.cs",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAQwBoAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T07:08:34.911Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Profile\\Index.cshtml",
+              "RelativeDocumentMoniker": "HRAnalysis\\Views\\Profile\\Index.cshtml",
+              "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Profile\\Index.cshtml",
+              "RelativeToolTip": "HRAnalysis\\Views\\Profile\\Index.cshtml",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAAAE0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-08T06:53:32.218Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Search.cshtml",
+              "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\AttKesalahan\\Search.cshtml",
+              "RelativeDocumentMoniker": "HRAnalysis\\Views\\AttKesalahan\\Search.cshtml",
+              "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\AttKesalahan\\Search.cshtml",
+              "RelativeToolTip": "HRAnalysis\\Views\\AttKesalahan\\Search.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2026-01-08T06:52:36.321Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProfileController.cs",
+              "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Controllers\\ProfileController.cs",
+              "RelativeDocumentMoniker": "HRAnalysis\\Controllers\\ProfileController.cs",
+              "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Controllers\\ProfileController.cs",
+              "RelativeToolTip": "HRAnalysis\\Controllers\\ProfileController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-08T06:52:27.271Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "AttKesalahanController.cs",
               "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Controllers\\AttKesalahanController.cs",
               "RelativeDocumentMoniker": "HRAnalysis\\Controllers\\AttKesalahanController.cs",
@@ -55,7 +123,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 6,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "HRAnalysis\\Data\\AppDbContext.cs",
@@ -63,17 +131,18 @@
               "RelativeToolTip": "HRAnalysis\\Data\\AppDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-08T02:03:08.291Z"
+              "WhenOpened": "2026-01-08T02:03:08.291Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "HRAnalysis\\Views\\Account\\Login.cshtml",
               "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Account\\Login.cshtml",
               "RelativeToolTip": "HRAnalysis\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAAAMAAAAAAAAAAAD4vxAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAIYCAAAAAAAAAAAUwJcCAACbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
               "WhenOpened": "2026-01-07T09:38:27.577Z",
               "EditorCaption": ""

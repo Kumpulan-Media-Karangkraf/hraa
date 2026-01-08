@@ -16,8 +16,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%), url('/images/photo.jpg');
-            background-size: cover;
+           background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -625,7 +624,7 @@
         }
     </style>
 </head>
-<body>
+<body style="background-image: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%), url('@Url.Content("~/images/photo.jpg")');">
     <div id="loading-overlay">
         <div class="spinner" id="manualSpinner"></div>
     </div>
@@ -662,7 +661,7 @@
             <form id="loginForm" asp-action="Login" asp-controller="Account" method="post">
                 <div class="form-group">
                     <label style="color:#4A148C" for="username">Username:</label>
-                    <input type="text" class="form-control" placeholder="Enter Username (ex:aina.nabilah)" id="username" name="username" required>
+                    <input type="text" class="form-control" placeholder="Enter Username (ex:aina.nabilah)" id="username" name="username" required autofocus>
                 </div>
                 <div class="form-group">
                     <label style="color:#4A148C" for="password">Password:</label>

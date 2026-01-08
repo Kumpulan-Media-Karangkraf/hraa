@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HRAnalysis")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+31805290bbcba63bcdf4eefb7bfac81d1e0ae289")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+19098bd2cae9675ace93bfdb9dd17d5adbf54675")]
 [assembly: System.Reflection.AssemblyProductAttribute("HRAnalysis")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HRAnalysis")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

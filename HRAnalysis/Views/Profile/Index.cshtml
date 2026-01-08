@@ -1,66 +1,170 @@
-﻿<!-- Index View with Popup Modals -->
+﻿<!-- Index View with Popup Modals - Mobile Responsive -->
 @model IEnumerable<HRAnalysis.Models.tbl_Profile>
 @{
     ViewData["Title"] = "Profile";
 }
 
 <style>
-     @@media (max-width: 576px) {
+    /* Mobile-first responsive styles */
+    @@media (max-width: 576px) {
         .modal-dialog {
             max-width: 95% !important;
             margin: 1.75rem auto;
         }
+        /* Hide table and show card layout on mobile */
+        #semakanTable_wrapper .table-responsive {
+            display: none;
+        }
+
+        .mobile-card-view {
+            display: block !important;
+        }
+        /* Make buttons stack vertically on mobile */
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+            .action-buttons .btn {
+                width: 100%;
+                margin: 0 !important;
+            }
+        /* Adjust DataTables controls for mobile */
+        .dataTables_length,
+        .dataTables_filter {
+            margin-bottom: 1rem;
+        }
+
+            .dataTables_filter input {
+                width: 100% !important;
+                margin-left: 0 !important;
+                margin-top: 0.5rem;
+            }
+    }
+
+    @@media (min-width: 577px) {
+        .mobile-card-view {
+            display: none !important;
+        }
+    }
+
+    /* Card styling for mobile view */
+    .profile-card {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .profile-card-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+        .profile-card-header i {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+    .profile-card-body {
+        margin-bottom: 0.75rem;
+    }
+
+    .profile-info-row {
+        display: flex;
+        padding: 0.5rem 0;
+    }
+
+    .profile-info-label {
+        font-weight: 600;
+        color: #6c757d;
+        min-width: 120px;
+    }
+
+    .profile-info-value {
+        flex: 1;
+        color: #212529;
     }
 </style>
+
 <p>
-    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#createModal">
-        Tambah
+    <button type="button" class="btn btn-primary mb-3 w-100 w-sm-auto" data-bs-toggle="modal" data-bs-target="#createModal">
+        <i class="fas fa-plus"></i> Tambah
     </button>
 </p>
 
+<!-- Desktop Table View -->
 <div class="table-responsive">
-<table id="semakanTable" class="table table-striped table-hover table-bordered align-middle" style="min-width: 1000px;">
-    <thead class="table-dark text-center">
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UpdatedBy)
-            </th>
-                <th>Created At</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table id="semakanTable" class="table table-striped table-hover table-bordered align-middle" style="min-width: 1000px;">
+        <thead class="table-dark text-center">
             <tr>
-                <td>
-                    <i class="fas fa-folder fa-lg" style="color:#007aff;"></i>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UpdatedBy)
-                </td>
-                    <td>
-                        @(item.CreatedAt?.ToString("dd/MM/yyyy hh:mm tt"))
-                    </td>
-
-              <td>
-    <a class="btn btn-sm btn-warning" href="@Url.Action("Search", "AttKesalahan", new { id = item.Id })">
-        <i class="fas fa-search"></i> Next
-    </a>
-    
-    <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal"
-            onclick="setDeleteData('@item.Id', '@item.Name')">
-        <i class="fas fa-trash"></i> Padam
-    </button>
-</td>
+                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.UpdatedBy)</th>
+                <th>Created At</th>
+                <th>Actions</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <i class="fas fa-folder fa-lg" style="color:#007aff;"></i>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.UpdatedBy)</td>
+                    <td>@(item.CreatedAt?.ToString("dd/MM/yyyy hh:mm tt"))</td>
+                    <td class="text-nowrap">
+                        <a class="btn btn-sm btn-warning" href="@Url.Action("Search", "AttKesalahan", new { id = item.Id })">
+                            <i class="fas fa-search"></i> Next
+                        </a>
+                        <button type="button" class="btn btn-danger btn-sm ms-2" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                                onclick="setDeleteData('@item.Id', '@item.Name')">
+                            <i class="fas fa-trash"></i> Padam
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Mobile Card View -->
+<div class="mobile-card-view" style="display: none;">
+    @foreach (var item in Model)
+    {
+        <div class="profile-card">
+            <div class="profile-card-header">
+                <i class="fas fa-folder" style="color:#007aff;"></i>
+                <h6 class="mb-0">@Html.DisplayFor(modelItem => item.Name)</h6>
+            </div>
+            <div class="profile-card-body">
+                <div class="profile-info-row">
+                    <span class="profile-info-label">Dikemaskini Oleh:</span>
+                    <span class="profile-info-value">@Html.DisplayFor(modelItem => item.UpdatedBy)</span>
+                </div>
+                <div class="profile-info-row">
+                    <span class="profile-info-label">Created At:</span>
+                    <span class="profile-info-value">@(item.CreatedAt?.ToString("dd/MM/yyyy hh:mm tt"))</span>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <a class="btn btn-warning btn-sm" href="@Url.Action("Search", "AttKesalahan", new { id = item.Id })">
+                    <i class="fas fa-search"></i> Next
+                </a>
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                        onclick="setDeleteData('@item.Id', '@item.Name')">
+                    <i class="fas fa-trash"></i> Padam
+                </button>
+            </div>
+        </div>
+    }
 </div>
 
 <!-- Create Modal -->
@@ -79,18 +183,12 @@
                         <input name="Name" id="Name" class="form-control" required />
                         <span class="text-danger" id="nameError"></span>
                     </div>
-                    <!-- Hidden field to hold username -->
-<input type="hidden" id="sessionUsername" value="@Context.Session.GetString("Username")" />
-
-<!-- Inside modal -->
-<div class="form-group mb-3">
-    <label for="UpdatedBy" class="control-label">Dikemaskini Oleh</label>
-    <input name="UpdatedBy" id="UpdatedBy" class="form-control" readonly />
-    <span class="text-danger" id="updatedByError"></span>
-</div>
-
-
-
+                    <input type="hidden" id="sessionUsername" value="@Context.Session.GetString("Username")" />
+                    <div class="form-group mb-3">
+                        <label for="UpdatedBy" class="control-label">Dikemaskini Oleh</label>
+                        <input name="UpdatedBy" id="UpdatedBy" class="form-control" readonly />
+                        <span class="text-danger" id="updatedByError"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -116,11 +214,11 @@
                 </div>
                 <p class="text-muted">Tindakan ini tidak boleh dibatalkan.</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <form asp-action="Delete" method="post" style="display: inline;">
+            <div class="modal-footer flex-column flex-sm-row">
+                <button type="button" class="btn btn-secondary w-100 w-sm-auto mb-2 mb-sm-0" data-bs-dismiss="modal">Batal</button>
+                <form asp-action="Delete" method="post" class="w-100 w-sm-auto">
                     <input type="hidden" id="deleteItemId" name="id" />
-                    <button type="submit" class="btn btn-danger">Ya, Padam</button>
+                    <button type="submit" class="btn btn-danger w-100 w-sm-auto">Ya, Padam</button>
                 </form>
             </div>
         </div>
@@ -138,50 +236,47 @@
     });
 </script>
 
-
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <!-- Bootstrap 5 compatible DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 
     <script>
         $(document).ready(function () {
-            $('#semakanTable').DataTable({
-                pagingType: "full_numbers",
-                language: {
-                    paginate: {
-                        first: "Pertama",
-                        last: "Terakhir",
-                        next: "Seterusnya",
-                        previous: "Sebelumnya"
+            // Only initialize DataTable on desktop
+            if ($(window).width() > 576) {
+                $('#semakanTable').DataTable({
+                    pagingType: "full_numbers",
+                    language: {
+                        paginate: {
+                            first: "Pertama",
+                            last: "Terakhir",
+                            next: "Seterusnya",
+                            previous: "Sebelumnya"
+                        },
+                        lengthMenu: "Papar _MENU_ rekod",
+                        zeroRecords: "Tiada rekod dijumpai",
+                        info: "Menunjukkan _START_ hingga _END_ dari _TOTAL_ rekod",
+                        infoEmpty: "Tiada data tersedia",
+                        search: "Cari:"
                     },
-                    lengthMenu: "Papar _MENU_ rekod",
-                    zeroRecords: "Tiada rekod dijumpai",
-                    info: "Menunjukkan _START_ hingga _END_ dari _TOTAL_ rekod",
-                    infoEmpty: "Tiada data tersedia",
-                    search: "Cari:"
-                },
-                pageLength: 10,
-                lengthMenu: [5, 10, 20, 50, 100]
-            });
+                    pageLength: 10,
+                    lengthMenu: [5, 10, 20, 50, 100],
+                    responsive: true
+                });
+            }
         });
 
-        // Function to set delete data
         function setDeleteData(id, name) {
             document.getElementById('deleteItemId').value = id;
             document.getElementById('deleteItemName').textContent = name;
         }
 
-        // Handle create form submission
         $('#createForm').on('submit', function(e) {
             e.preventDefault();
-
-            // Clear previous errors
             $('.text-danger').text('');
 
-            // Basic validation
             var name = $('#Name').val().trim();
             var updatedBy = $('#UpdatedBy').val().trim();
             var hasError = false;
@@ -197,12 +292,10 @@
             }
 
             if (!hasError) {
-                // If validation passes, submit the form
                 this.submit();
             }
         });
 
-        // Reset form when modal is closed
         $('#createModal').on('hidden.bs.modal', function () {
             $('#createForm')[0].reset();
             $('.text-danger').text('');

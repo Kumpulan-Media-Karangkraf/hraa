@@ -1,5 +1,7 @@
 is_global = true
 build_property.TargetFramework = net6.0
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v6.0
 build_property.TargetPlatformMinVersion = 
 build_property.UsingMicrosoftNETSdkWeb = true
 build_property.ProjectTypeGuids = 
@@ -9,91 +11,93 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = HRAnalysis
 build_property.RootNamespace = HRAnalysis
-build_property.ProjectDir = D:\Github\Kumpulan-Media-Karangkraf\HRA\HRAnalysis\
+build_property.ProjectDir = C:\Users\aina.nabilah\Documents\GitHub\hraa\HRAnalysis\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\Github\Kumpulan-Media-Karangkraf\HRA\HRAnalysis
+build_property.MSBuildProjectDirectory = C:\Users\aina.nabilah\Documents\GitHub\hraa\HRAnalysis
 build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 6.0
+build_property.EnableCodeStyleSeverity = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Account/Homepage.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Account/Homepage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxIb21lcGFnZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Account/Login.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Account/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/AttKesalahan/Search.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/AttKesalahan/Search.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0S2VzYWxhaGFuXFNlYXJjaC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/AttKesalahan/ViewKesalahan.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/AttKesalahan/ViewKesalahan.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0S2VzYWxhaGFuXFZpZXdLZXNhbGFoYW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/AttKesalahan/_SemakanDetailsPartial.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/AttKesalahan/_SemakanDetailsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXR0S2VzYWxhaGFuXF9TZW1ha2FuRGV0YWlsc1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Profile/Create.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Profile/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Profile/Delete.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Profile/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Profile/Details.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Profile/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Profile/Edit.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Profile/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Profile/Index.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Profile/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/ProsesCutiSkokraf/Index.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/ProsesCutiSkokraf/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvc2VzQ3V0aVNrb2tyYWZcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/SemakanPage/Semakan.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/SemakanPage/Semakan.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2VtYWthblBhZ2VcU2VtYWthbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Shared/Loginn.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Shared/Loginn.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXExvZ2lubi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/User/Create.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/User/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/User/Edit.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/User/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/User/Index.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/User/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/_ViewImports.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/_ViewStart.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Github/Kumpulan-Media-Karangkraf/HRA/HRAnalysis/Views/Shared/_Layout.cshtml]
+[C:/Users/aina.nabilah/Documents/GitHub/hraa/HRAnalysis/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-5r3xdcz2dd
