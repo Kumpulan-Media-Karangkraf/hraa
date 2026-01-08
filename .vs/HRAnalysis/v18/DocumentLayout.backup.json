@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\controllers\\attkesalahancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\controllers\\attkesalahancontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|c:\\users\\aina.nabilah\\documents\\github\\hraa\\hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{705615DD-DA5B-490B-B856-16F045AC6B24}|HRAnalysis\\HRAnalysis.csproj|solutionrelative:hranalysis\\views\\account\\login.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -37,21 +37,25 @@
               "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{56df62a4-05a3-4e5b-aa1a-99371ccfb997}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "AttKesalahanController.cs",
               "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Controllers\\AttKesalahanController.cs",
               "RelativeDocumentMoniker": "HRAnalysis\\Controllers\\AttKesalahanController.cs",
               "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Controllers\\AttKesalahanController.cs",
               "RelativeToolTip": "HRAnalysis\\Controllers\\AttKesalahanController.cs",
-              "ViewState": "AgIAAJUCAAAAAAAAAAAAACwEAAAzAAAAAAAAAA==",
+              "ViewState": "AgIAAHQCAAAAAAAAAAAAAIACAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-08T02:21:32.379Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "HRAnalysis\\Data\\AppDbContext.cs",
@@ -63,19 +67,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Login.cshtml",
               "DocumentMoniker": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Account\\Login.cshtml",
               "RelativeDocumentMoniker": "HRAnalysis\\Views\\Account\\Login.cshtml",
-              "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Account\\Login.cshtml",
-              "RelativeToolTip": "HRAnalysis\\Views\\Account\\Login.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAfAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\aina.nabilah\\Documents\\GitHub\\hraa\\HRAnalysis\\Views\\Account\\Login.cshtml*",
+              "RelativeToolTip": "HRAnalysis\\Views\\Account\\Login.cshtml*",
+              "ViewState": "AgIAAAMAAAAAAAAAAAD4vx8AAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2026-01-07T09:38:27.577Z"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{56df62a4-05a3-4e5b-aa1a-99371ccfb997}"
+              "WhenOpened": "2026-01-07T09:38:27.577Z",
+              "EditorCaption": ""
             }
           ]
         }
